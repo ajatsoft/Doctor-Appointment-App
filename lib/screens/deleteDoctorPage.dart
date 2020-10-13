@@ -1,5 +1,5 @@
 import 'package:fast_turtle_v2/dbHelper/delData.dart';
-import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/doctorModel.dart';
 import 'package:fast_turtle_v2/models/hospitalModel.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
 import 'package:fast_turtle_v2/screens/showDoctors.dart';
@@ -15,14 +15,14 @@ class DeleteDoctor extends StatefulWidget {
 }
 
 class DeleteDoctorState extends State {
-  Hospital hastane = Hospital();
+  Hospital hospital = Hospital();
   Section section = Section();
-  Doktor doktor = Doktor();
+  Doctor doctor = Doctor();
   double goruntu = 0.0;
   double drGoruntu = 0.0;
-  bool hastaneSecildiMi = false;
-  bool bolumSecildiMi = false;
-  bool doktorSecildiMi = false;
+  bool hospitalChosenMi = false;
+  bool departmentChosenMi = false;
+  bool doctorChosenMi = false;
   String textMessage = " ";
 
   @override
@@ -31,7 +31,7 @@ class DeleteDoctorState extends State {
       backgroundColor: Colors.blueAccent,
       appBar: AppBar(
         title: Text(
-          "Doktor Silme Ekranı",
+          "Doctor Silme Ekranı",
           style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
         ),
       ),
@@ -44,58 +44,58 @@ class DeleteDoctorState extends State {
                 child: Column(
                   children: <Widget>[
                     RaisedButton(
-                      child: Text("Hastane Seçmek İçin Tıkla"),
+                      child: Text("hospital Seçmek İçin Tıkla"),
                       onPressed: () {
-                        bolumSecildiMi = false;
-                        doktorSecildiMi = false;
+                        departmentChosenMi = false;
+                        doctorChosenMi = false;
                         hospitalNavigator(BuildHospitalList());
                       },
                     ),
                     SizedBox(
                       height: 16.0,
                     ),
-                    showSelectedHospital(hastaneSecildiMi),
+                    showSelectedHospital(hospitalChosenMi),
                     SizedBox(
                       height: 16.0,
                     ),
                     RaisedButton(
                       child: Text("Bölüm Seçmek İçin Tıkla"),
                       onPressed: () {
-                        if (hastaneSecildiMi) {
-                          doktorSecildiMi = false;
-                          sectionNavigator(BuildSectionList(hastane));
+                        if (hospitalChosenMi) {
+                          doctorChosenMi = false;
+                          sectionNavigator(BuildSectionList(hospital));
                         } else {
                           alrtHospital(
-                              context, "Hastane seçmeden bölüm seçemezsiniz");
+                              context, "hospital seçmeden bölüm seçemezsiniz");
                         }
                       },
                     ),
                     SizedBox(
                       height: 16.0,
                     ),
-                    _showSelectedSection(bolumSecildiMi),
+                    _showSelectedSection(departmentChosenMi),
                     SizedBox(
                       height: 16.0,
                     ),
                     RaisedButton(
-                      child: Text("Doktor Seçmek İçin Tıkla"),
+                      child: Text("Doctor Seçmek İçin Tıkla"),
                       onPressed: () {
-                        if (hastaneSecildiMi && bolumSecildiMi) {
-                          doctorNavigator(BuildDoctorList(section, hastane));
+                        if (hospitalChosenMi && departmentChosenMi) {
+                          doctorNavigator(BuildDoctorList(section, hospital));
                         } else {
                           alrtHospital(context,
-                              "Hastane ve bölüm seçmeden doktor seçemezsiniz");
+                              "hospital per bölüm seçmeden doctor seçemezsiniz");
                         }
                       },
                     ),
                     SizedBox(
                       height: 16.0,
                     ),
-                    showSelectedDoctor(doktorSecildiMi),
+                    showSelectedDoctor(doctorChosenMi),
                     SizedBox(
                       height: 25.0,
                     ),
-                    _silButonu()
+                    _silButton()
                   ],
                 ),
               ),
@@ -120,13 +120,13 @@ class DeleteDoctorState extends State {
   }
 
   void hospitalNavigator(dynamic page) async {
-    hastane = await Navigator.push(
+    hospital = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => page));
 
-    if (hastane == null) {
-      hastaneSecildiMi = false;
+    if (hospital == null) {
+      hospitalChosenMi = false;
     } else {
-      hastaneSecildiMi = true;
+      hospitalChosenMi = true;
     }
   }
 
@@ -135,17 +135,17 @@ class DeleteDoctorState extends State {
         context, MaterialPageRoute(builder: (context) => page));
 
     if (section == null) {
-      bolumSecildiMi = false;
+      departmentChosenMi = false;
     } else {
-      bolumSecildiMi = true;
+      departmentChosenMi = true;
     }
   }
 
-  showSelectedHospital(bool secildiMi) {
+  showSelectedHospital(bool chosenMi) {
     String textMessage = " ";
-    if (secildiMi) {
+    if (chosenMi) {
       setState(() {
-        textMessage = this.hastane.hastaneAdi.toString();
+        textMessage = this.hospital.hospitalName.toString();
       });
       goruntu = 1.0;
     } else {
@@ -157,7 +157,7 @@ class DeleteDoctorState extends State {
         child: Row(
           children: <Widget>[
             Text(
-              "Seçilen Hastane : ",
+              "Seçilen hospital : ",
               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
             Opacity(
@@ -174,12 +174,12 @@ class DeleteDoctorState extends State {
         ));
   }
 
-  _showSelectedSection(bool secildiMi) {
+  _showSelectedSection(bool chosenMi) {
     double goruntu = 0.0;
 
-    if (secildiMi) {
+    if (chosenMi) {
       setState(() {
-        textMessage = this.section.bolumAdi.toString();
+        textMessage = this.section.departmentName.toString();
       });
       goruntu = 1.0;
     } else {
@@ -203,7 +203,7 @@ class DeleteDoctorState extends State {
         ));
   }
 
-  _buildTextMessage(String gelenText) {
+  _buildTextMessage(String incomingText) {
     return Text(
       textMessage,
       style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
@@ -211,21 +211,21 @@ class DeleteDoctorState extends State {
   }
 
   void doctorNavigator(dynamic page) async {
-    doktor = await Navigator.push(
+    doctor = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => page));
 
-    if (doktor == null) {
-      doktorSecildiMi = false;
+    if (doctor == null) {
+      doctorChosenMi = false;
     } else {
-      doktorSecildiMi = true;
+      doctorChosenMi = true;
     }
   }
 
-  showSelectedDoctor(bool secildiMih) {
+  showSelectedDoctor(bool chosenMih) {
     String textMessage = " ";
-    if (secildiMih) {
+    if (chosenMih) {
       setState(() {
-        textMessage = this.doktor.adi.toString() + " " + this.doktor.soyadi;
+        textMessage = this.doctor.firstName.toString() + " " + this.doctor.lastName;
       });
       drGoruntu = 1.0;
     } else {
@@ -237,7 +237,7 @@ class DeleteDoctorState extends State {
         child: Row(
           children: <Widget>[
             Text(
-              "Seçilen Doktor : ",
+              "Seçilen Doctor : ",
               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
             Opacity(
@@ -254,16 +254,16 @@ class DeleteDoctorState extends State {
         ));
   }
 
-  _silButonu() {
+  _silButton() {
     return Container(
       child: RaisedButton(
         child: Text(
-          "Seçili Doktoru Sil",
+          "Seçili Doctoru Sil",
           style: TextStyle(fontSize: 20.0),
         ),
         onPressed: () {
-          if (hastaneSecildiMi && bolumSecildiMi && doktorSecildiMi) {
-            DelService().deleteDoctorbyTCKN(doktor);
+          if (hospitalChosenMi && departmentChosenMi && doctorChosenMi) {
+            DelService().deleteDoctorbyToken(doctor);
             Navigator.pop(context, true);
           } else {
             alrtHospital(context, "Eksik bilgi var");

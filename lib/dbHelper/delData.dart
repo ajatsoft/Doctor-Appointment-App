@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_turtle_v2/models/activeAppointmentModel.dart';
-import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/doctorModel.dart';
 import 'package:fast_turtle_v2/models/favListModel.dart';
 import 'package:fast_turtle_v2/models/hospitalModel.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
@@ -9,20 +9,20 @@ class DelService {
   ActiveAppointment activeAppointment = ActiveAppointment();
 
   // This method delete a doctor also her/his active appoit
-  deleteDoctorbyTCKN(Doktor doktor) {
+  deleteDoctorbyToken(Doctor doctor) {
     Firestore.instance
-        .collection("tblDoktor")
-        .document(doktor.reference.documentID)
+        .collection("tblDoctor")
+        .document(doctor.reference.documentID)
         .delete();
     Firestore.instance
-        .collection("tblAktifRandevu")
-        .where('doktorTCKN', isEqualTo: doktor.kimlikNo)
+        .collection("tbleActiveAppointments")
+        .where('doctorToken', isEqualTo: doctor.id)
         .getDocuments()
         .then((QuerySnapshot docs) {
       if (docs.documents.isNotEmpty) {
         for (var i = 0; i < docs.documents.length; i++) {
           Firestore.instance
-              .collection("tblAktifRandevu")
+              .collection("tbleActiveAppointments")
               .document(docs.documents[i].reference.documentID)
               .delete();
         }
@@ -32,7 +32,7 @@ class DelService {
 
   deleteActiveAppointment(ActiveAppointment randevu) {
     Firestore.instance
-        .collection('tblAktifRandevu')
+        .collection('tbleActiveAppointments')
         .document(randevu.reference.documentID)
         .delete();
   }
@@ -44,27 +44,27 @@ class DelService {
         .delete();
   }
 
-  deleteSectionBySectionId(Section bolum, var referans) {
+  deleteSectionBySectionId(Section department, var referans) {
     Firestore.instance
-        .collection("tblBolum")
+        .collection("tblDepartment")
         .document(referans.documentID)
         .delete();
     Firestore.instance
-        .collection("tblDoktor")
-        .where('bolumId', isEqualTo: bolum.bolumId)
+        .collection("tblDoctor")
+        .where('departmentId', isEqualTo: department.departmentId)
         .getDocuments()
         .then((QuerySnapshot docs) {
       if (docs.documents.isNotEmpty) {
         for (var i = 0; i < docs.documents.length; i++) {
           Firestore.instance
-              .collection("tblAktifRandevu")
-              .where('doktorTCKN', isEqualTo: docs.documents[i]['kimlikNo'])
+              .collection("tbleActiveAppointments")
+              .where('doctorToken', isEqualTo: docs.documents[i]['id'])
               .getDocuments()
               .then((QuerySnapshot docs) {
             if (docs.documents.isNotEmpty) {
               for (var i = 0; i < docs.documents.length; i++) {
                 Firestore.instance
-                    .collection("tblAktifRandevu")
+                    .collection("tbleActiveAppointments")
                     .document(docs.documents[i].reference.documentID)
                     .delete();
               }
@@ -72,7 +72,7 @@ class DelService {
           });
 
           Firestore.instance
-              .collection("tblDoktor")
+              .collection("tblDoctor")
               .document(docs.documents[i].reference.documentID)
               .delete();
         }
@@ -80,22 +80,22 @@ class DelService {
     });
   }
 
-  deleteHospitalById(Hospital hastane) {
+  deleteHospitalById(Hospital hospital) {
     Section section = Section();
     Firestore.instance
-        .collection("tblBolum")
-        .where('hastaneId', isEqualTo: hastane.hastaneId)
+        .collection("tblDepartment")
+        .where('hospitalId', isEqualTo: hospital.hospitalId)
         .getDocuments()
         .then((QuerySnapshot docs) {
       for (var i = 0; i < docs.documents.length; i++) {
-        section = Section.fromMap(docs.documents[i].data);
+        section = Section.fromMap(docs.documents[i].data());
         deleteSectionBySectionId(section, docs.documents[i].reference);
       }
     });
 
     Firestore.instance
-        .collection("tblHastane")
-        .document(hastane.reference.documentID)
+        .collection("tblhospital")
+        .document(hospital.reference.documentID)
         .delete();
   }
 }

@@ -2,110 +2,110 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_turtle_v2/dbHelper/searchData.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
 import 'package:fast_turtle_v2/models/userModel.dart';
-import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/doctorModel.dart';
 import 'package:fast_turtle_v2/models/hospitalModel.dart';
 
 class UpdateService {
   updateUser(User user) {
     Firestore.instance
-        .collection("tblKullanici")
+        .collection("tblUser")
         .document(user.reference.documentID)
         .updateData({
-      'sifre': user.sifre.toString(),
+      'password': user.password.toString(),
       'ad': user.adi,
-      'soyad': user.soyadi
+      'soyad': user.lastName
     });
   }
 
-  // String updateUserFavList(String kimlikNo, String doktorAdSoyad) {
+  // String updateUserFavList(String id, String doctorAdSoyad) {
   //   User temp;
-  //   SearchService().searchUserById(kimlikNo).then((QuerySnapshot docs) {
+  //   SearchService().searchUserById(id).then((QuerySnapshot docs) {
   //     temp = User.fromMap(docs.documents[0].data);
   //     temp.reference = docs.documents[0].reference;
-  //     if (!temp.favoriDoktorlar.contains(doktorAdSoyad)) {
-  //       temp.favoriDoktorlar.add(doktorAdSoyad);
+  //     if (!temp.favoriDoctorlar.contains(doctorAdSoyad)) {
+  //       temp.favoriDoctorlar.add(doctorAdSoyad);
 
   //       Firestore.instance
-  //           .collection("tblKullanici")
+  //           .collection("tblUser")
   //           .document(temp.reference.documentID)
-  //           .updateData({'favoriDoktorlar': temp.favoriDoktorlar});
+  //           .updateData({'favoriDoctorlar': temp.favoriDoctorlar});
   //     }
   //   });
 
-  //   return "Güncelleme gerçekleştirildi";
+  //   return "Update completed";
   // }
 
-  String updateDoktor(Doktor doktor) {
+  String updateDoctor(Doctor doctor) {
     Firestore.instance
-        .collection("tblDoktor")
-        .document(doktor.reference.documentID)
+        .collection("tblDoctor")
+        .document(doctor.reference.documentID)
         .updateData({
-      'ad': doktor.adi,
-      'sifre': doktor.sifre.toString(),
-      'soyad': doktor.soyadi
+      'ad': doctor.firstName,
+      'password': doctor.password.toString(),
+      'soyad': doctor.lastName
     });
-    return "Güncelleme gerçekleştirildi";
+    return "Update completed";
   }
 
-  String updateDoktorFavCountPlus(String doktorNo) {
-    Doktor doktor;
-    SearchService().searchDoctorById(doktorNo).then((QuerySnapshot docs) {
-      doktor = Doktor.fromMap(docs.documents[0].data);
-      doktor.reference = docs.documents[0].reference;
+  String updateDoctorFavCountPlus(String doctorNo) {
+    Doctor doctor;
+    SearchService().searchDoctorById(doctorNo).then((QuerySnapshot docs) {
+      doctor = Doctor.fromMap(docs.documents[0].data());
+      doctor.reference = docs.documents[0].reference;
       Firestore.instance
-          .collection("tblDoktor")
-          .document(doktor.reference.documentID)
-          .updateData({'favoriSayaci': doktor.favoriSayaci + 1});
+          .collection("tblDoctor")
+          .document(doctor.reference.documentID)
+          .updateData({'favoriSayaci': doctor.favoriSayaci + 1});
     });
 
-    return "Güncelleme gerçekleştirildi";
+    return "Update completed";
   }
 
-  String updateDoktorFavCountMinus(String doktorNo) {
-    Doktor doktor;
-    SearchService().searchDoctorById(doktorNo).then((QuerySnapshot docs) {
-      doktor = Doktor.fromMap(docs.documents[0].data);
-      doktor.reference = docs.documents[0].reference;
+  String updateDoctorFavCountMinus(String doctorNo) {
+    Doctor doctor;
+    SearchService().searchDoctorById(doctorNo).then((QuerySnapshot docs) {
+      doctor = Doctor.fromMap(docs.documents[0].data());
+      doctor.reference = docs.documents[0].reference;
       Firestore.instance
-          .collection("tblDoktor")
-          .document(doktor.reference.documentID)
-          .updateData({'favoriSayaci': doktor.favoriSayaci - 1});
+          .collection("tblDoctor")
+          .document(doctor.reference.documentID)
+          .updateData({'favoriSayaci': doctor.favoriSayaci - 1});
     });
 
-    return "Güncelleme gerçekleştirildi";
+    return "Update completed";
   }
 
-  String updateDoctorAppointments(String kimlikNo, String islemTarihi) {
-    Doktor temp;
-    SearchService().searchDoctorById(kimlikNo).then((QuerySnapshot docs) {
-      temp = Doktor.fromMap(docs.documents[0].data);
+  String updateDoctorAppointments(String id, String operationHistory) {
+    Doctor temp;
+    SearchService().searchDoctorById(id).then((QuerySnapshot docs) {
+      temp = Doctor.fromMap(docs.documents[0].data());
       temp.reference = docs.documents[0].reference;
-      if (temp.randevular.contains(islemTarihi)) {
-        temp.randevular.remove(islemTarihi);
+      if (temp.appointments.contains(operationHistory)) {
+        temp.appointments.remove(operationHistory);
 
         Firestore.instance
-            .collection("tblDoktor")
+            .collection("tblDoctor")
             .document(temp.reference.documentID)
-            .updateData({'randevular': temp.randevular});
+            .updateData({'appointments': temp.appointments});
       }
     });
 
-    return "Güncelleme gerçekleştirildi";
+    return "Update completed";
   }
 
-  String updateHastane(Hospital hastane) {
+  String updatehospital(Hospital hospital) {
     Firestore.instance
-        .collection("tblHastane")
-        .document(hastane.reference.documentID)
-        .updateData({'hastaneAdi': hastane.hastaneAdi.toString()});
-    return "Güncelleme gerçekleştirildi";
+        .collection("tblhospital")
+        .document(hospital.reference.documentID)
+        .updateData({'hospitalName': hospital.hospitalName.toString()});
+    return "Update completed";
   }
 
-  String updateSection(Section bolum) {
+  String updateSection(Section department) {
     Firestore.instance
-        .collection("tblBolum")
-        .document(bolum.reference.documentID)
-        .updateData({'bolumAdi': bolum.bolumAdi.toString()});
-    return "Güncelleme gerçekleştirildi";
+        .collection("tblDepartment")
+        .document(department.reference.documentID)
+        .updateData({'departmentName': department.departmentName.toString()});
+    return "Update completed";
   }
 }

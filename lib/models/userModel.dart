@@ -1,56 +1,56 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
-  String kimlikNo;
+  String id;
   String adi;
-  String soyadi;
-  String sifre;
-  String dogumTarihi;
-  String cinsiyet;
-  String dogumYeri;
+  String lastName;
+  String password;
+  String birthday;
+  String gender;
+  String placeOfBirth;
 
   DocumentReference reference;
 
   User(
-      {this.kimlikNo,
+      {this.id,
       this.adi,
-      this.soyadi,
-      this.sifre,
-      this.dogumTarihi,
-      this.cinsiyet,
-      this.dogumYeri});
+      this.lastName,
+      this.password,
+      this.birthday,
+      this.gender,
+      this.placeOfBirth});
 
   User.fromJson(Map<String, dynamic> json) {
-    kimlikNo = json['kimlikNo'];
+    id = json['id'];
     adi = json['adi'];
-    soyadi = json['soyadi'];
-    dogumTarihi = json['dogumTarihi'];
-    cinsiyet = json['cinsiyet'];
-    sifre = json['sifre'];
-    dogumYeri = json["dogumYeri"];
+    lastName = json['lastName'];
+    birthday = json['birthday'];
+    gender = json['gender'];
+    password = json['password'];
+    placeOfBirth = json["placeOfBirth"];
   }
 
   User.fromMap(Map<String, dynamic> map, {this.reference})
-      : kimlikNo = map["kimlikNo"],
-        sifre = map["sifre"],
+      : id = map["id"],
+        password = map["password"],
         adi = map["ad"],
-        soyadi = map["soyad"],
-        dogumYeri = map["dogumYeri"],
-        dogumTarihi = map["dogumTarihi"],
-        cinsiyet = map["cinsiyet"];
+        lastName = map["soyad"],
+        placeOfBirth = map["placeOfBirth"],
+        birthday = map["birthday"],
+        gender = map["gender"];
 
   User.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['kimlikNo'] = this.kimlikNo;
+    data['id'] = this.id;
     data['adi'] = this.adi;
-    data['soyadi'] = this.soyadi;
-    data['dogumTarihi'] = this.dogumTarihi;
-    data['cinsiyet'] = this.cinsiyet;
-    data['sifre'] = this.sifre;
-    data['dogumYeri'] = this.dogumYeri;
+    data['lastName'] = this.lastName;
+    data['birthday'] = this.birthday;
+    data['gender'] = this.gender;
+    data['password'] = this.password;
+    data['placeOfBirth'] = this.placeOfBirth;
     return data;
   }
 }

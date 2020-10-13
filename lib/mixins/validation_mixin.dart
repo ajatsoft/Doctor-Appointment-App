@@ -1,7 +1,7 @@
 class ValidationMixin {
   String validateTCNo(String value) {
     if (value.length != 11) {
-      return "T.C. Kimlik Numarası 11 hane olmalıdır";
+      return "T.C. Id Numarası 11 hane olmalıdır";
     }
     
     return null;

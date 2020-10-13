@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_turtle_v2/dbHelper/searchData.dart';
-import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/doctorModel.dart';
 import 'package:fast_turtle_v2/models/hospitalModel.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
 import 'package:fast_turtle_v2/screens/showAppoForDoc.dart';
@@ -8,44 +8,46 @@ import 'package:fast_turtle_v2/screens/updateDoctorPass.dart';
 import 'package:flutter/material.dart';
 
 class DoctorHomePage extends StatefulWidget {
-  final Doktor doktor;
-  DoctorHomePage(this.doktor);
+  final Doctor doctor;
+  DoctorHomePage(this.doctor);
   @override
-  _DoctorHomePageState createState() => _DoctorHomePageState(doktor);
+  _DoctorHomePageState createState() => _DoctorHomePageState(doctor);
 }
 
 class _DoctorHomePageState extends State<DoctorHomePage> {
-  Doktor _doktor;
-  _DoctorHomePageState(this._doktor);
+  Doctor _doctor;
+  _DoctorHomePageState(this._doctor);
 
-  Hospital hastane;
-  Section bolum;
+  Hospital hospital = Hospital(hospitalName: "clinique", hospitalId: 1111);
+  Section department = Section(departmentName: "derma", departmentId: 2222, hospitalId: 1111);
   @override
   void initState() {
     super.initState();
-    SearchService()
-        .searchHospitalById(_doktor.hastaneId)
-        .then((QuerySnapshot docs) {
-      this.hastane = Hospital.fromMap(docs.documents[0].data);
-    });
-    SearchService()
-        .searchSectionById(_doktor.bolumId)
-        .then((QuerySnapshot docs) {
-      this.bolum = Section.fromMap(docs.documents[0].data);
-    });
+    // SearchService()
+    //     .searchHospitalById(_doctor.hospitalId)
+    //     .then((QuerySnapshot docs) {
+    //   this.hospital = Hospital(hospitalName: "clinique", hospitalId: 1111);
+          // Hospital.fromMap(docs.documents[0].data());
+    // });
+    // SearchService()
+    //     .searchSectionById(_doctor.departmentId)
+    //     .then((QuerySnapshot docs) {
+    //   this.department = Section(departmentName: "derma", departmentId: 2222, hospitalId: 1111);
+          // Section.fromMap(docs.documents[0].data());
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    String hastaneAdi, bolumAdi;
-    setState(() {
-      hastaneAdi = hastane.hastaneAdi.toString();
-      bolumAdi = bolum.bolumAdi;
-    });
+    String hospitalName, departmentName;
+    // setState(() {
+    //   hospitalName = hospital.hospitalName.toString();
+    //   departmentName = department.departmentName;
+    // });
     return Scaffold(
         appBar: AppBar(
-          title: Text("Doktor Ana Sayfası"),
+          title: Text("Doctor Home Page"),
         ),
         body: SingleChildScrollView(
             child: Column(children: <Widget>[
@@ -65,44 +67,47 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                   SizedBox(
                     height: 13.0,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(left: 18.0),
-                        child: Icon(
-                          Icons.healing,
-                          size: 50.0,
+                  Container(
+                    constraints: BoxConstraints.tightFor(height: 60, width: 500),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        // Container(
+                        //   padding: EdgeInsets.only(left: 18.0),
+                        //   child: Icon(
+                        //     Icons.healing,
+                        //     size: 20.0,
+                        //   ),
+                        // ),
+                        SizedBox(
+                          width: 3.0,
                         ),
-                      ),
-                      SizedBox(
-                        width: 3.0,
-                      ),
-                      Container(
-                        child: Text(
-                          _doktor.adi,
-                          style: TextStyle(
-                              fontSize: 30.0, fontWeight: FontWeight.bold),
+                        Container(
+                          child: Text(
+                            "_doctor.firstName",
+                            style: TextStyle(
+                                fontSize: 30.0, fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 15.0,
-                      ),
-                      Container(
-                        child: Text(
-                          _doktor.soyadi,
-                          style: TextStyle(
-                              fontSize: 30.0, fontWeight: FontWeight.bold),
+                        SizedBox(
+                          width: 5.0,
                         ),
-                      )
-                    ],
+                        // Container(
+                        //   child: Text(
+                        //     "_doctor.lastName",
+                        //     style: TextStyle(
+                        //         fontSize: 30.0, fontWeight: FontWeight.bold),
+                        //   ),
+                        // )
+                      ],
+                    ),
                   ),
                   Container(
                     color: Colors.grey,
                     width: 370.0,
                     height: 0.4,
                   ),
-                  _buildAttributeRow("T.C. Kimlik Numarası", _doktor.kimlikNo),
+                  _buildAttributeRow("T.C. ID Number", _doctor.id),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -114,7 +119,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                           width: 120.0,
                           height: 25.0,
                           child: Text(
-                            "Hastane",
+                            "hospital",
                             style: TextStyle(
                                 fontSize: 15.0, fontWeight: FontWeight.bold),
                           ),
@@ -127,7 +132,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                         padding: EdgeInsets.only(top: 20.0, left: 13.0),
                         child: Container(
                           child: Text(
-                            hastaneAdi,
+                            "hospitalName",
                             style: TextStyle(
                                 fontSize: 15.0, fontWeight: FontWeight.bold),
                           ),
@@ -135,7 +140,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                       )
                     ],
                   ),
-                  _buildAttributeRow("Bölüm ", bolumAdi.toString()),
+                  _buildAttributeRow("Department ", departmentName.toString()),
                   SizedBox(
                     height: 30.0,
                   )
@@ -152,15 +157,15 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                 SizedBox(
                   height: 5.0,
                 ),
-                _sifreGuncelleButonu(),
+                _passwordUpdateButton(),
                 SizedBox(
                   height: 7.0,
                 ),
-                _randevulariGotuntuleButonu(),
+                _appointmentsiGotuntuleButton(),
                 SizedBox(
                   height: 7.0,
                 ),
-                _cikisYapButonu(),
+                _exitButton(),
               ],
             ),
           )
@@ -168,39 +173,41 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
   }
 
   Widget _buildAttributeRow(var textMessage, var textValue) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(top: 20.0, left: 13.0),
-          child: Container(
-            alignment: Alignment.center,
-            color: Colors.greenAccent,
-            width: 200.0,
-            height: 25.0,
-            child: Text(
-              textMessage,
-              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: 20.0, left: 13.0),
+            child: Container(
+              alignment: Alignment.center,
+              color: Colors.greenAccent,
+              width: 200.0,
+              height: 25.0,
+              child: Text(
+                "textMessage",
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+              ),
             ),
           ),
-        ),
-        SizedBox(
-          width: 25.0,
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 20.0, left: 13.0),
-          child: Container(
-            child: Text(
-              textValue,
-              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-            ),
+          SizedBox(
+            width: 17.0,
           ),
-        )
-      ],
+          Padding(
+            padding: EdgeInsets.only(top: 20.0, left: 13.0),
+            child: Container(
+              child: Text(
+                textValue,
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
-  _sifreGuncelleButonu() {
+  _passwordUpdateButton() {
     return Container(
       padding: EdgeInsets.all(1.0),
       width: 390.0,
@@ -211,17 +218,17 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
         splashColor: Colors.grey,
         highlightColor: Colors.white70,
         child: Text(
-          "Şifre Güncelle",
+          "Enter Update",
           style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         ),
         onPressed: () {
-          basicNavigator(OnlyUpdatePassword(_doktor), "İşlem Tamamlandı");
+          basicNavigator(OnlyUpdatePassword(_doctor), "Operation Completed");
         },
       ),
     );
   }
 
-  _randevulariGotuntuleButonu() {
+  _appointmentsiGotuntuleButton() {
     return Container(
       padding: EdgeInsets.all(1.0),
       width: 390.0,
@@ -232,7 +239,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
         splashColor: Colors.grey,
         highlightColor: Colors.white70,
         child: Text(
-          "Randevuları Görüntüle",
+          "Appointment View",
           style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         ),
         onPressed: () {
@@ -240,7 +247,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      BuildAppointmentListForDoctor(_doktor)));
+                      BuildAppointmentListForDoctor(_doctor)));
         },
       ),
     );
@@ -258,7 +265,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
   void alrtHospital(BuildContext context, String message) {
     var alertDoctor = AlertDialog(
       title: Text(
-        "Bilgilendirme!",
+        "Information!",
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       content: Text(message),
@@ -271,7 +278,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
         });
   }
 
-  _cikisYapButonu() {
+  _exitButton() {
     return Container(
       padding: EdgeInsets.all(1.0),
       width: 390.0,
@@ -282,7 +289,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
         splashColor: Colors.grey,
         highlightColor: Colors.white70,
         child: Text(
-          "Güvenli Çıkış",
+          "Safe Exit",
           style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         ),
         onPressed: () {

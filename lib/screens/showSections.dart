@@ -27,8 +27,8 @@ class _BuildSectionListState extends State<BuildSectionList> {
   _buildStremBuilder(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance
-          .collection("tblBolum")
-          .where("hastaneId", isEqualTo: _hospital.hastaneId)
+          .collection("tblDepartment")
+          .where("hospitalId", isEqualTo: _hospital.hospitalId)
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
@@ -52,14 +52,14 @@ class _BuildSectionListState extends State<BuildSectionList> {
   _buildListItem(BuildContext context, DocumentSnapshot data) {
     final section = Section.fromSnapshot(data);
     return Padding(
-      key: ValueKey(section.bolumId),
+      key: ValueKey(section.departmentId),
       padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
         decoration: BoxDecoration(
             border: Border.all(color: Colors.grey),
             borderRadius: BorderRadius.circular(10.0)),
         child: ListTile(
-          title: Text(section.bolumAdi),
+          title: Text(section.departmentName),
           onTap: () {
             Navigator.pop(context, section);
           },

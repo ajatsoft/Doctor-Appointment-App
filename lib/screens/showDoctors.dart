@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/doctorModel.dart';
 import 'package:fast_turtle_v2/models/hospitalModel.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,7 @@ class _BuildDoctorListState extends State<BuildDoctorList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Doktorlar"),
+        title: Text("Doctorlar"),
       ),
       body: _buildStremBuilder(context),
     );
@@ -31,9 +31,9 @@ class _BuildDoctorListState extends State<BuildDoctorList> {
   _buildStremBuilder(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance
-          .collection("tblDoktor")
-          .where("hastaneId", isEqualTo: hospital.hastaneId)
-          .where("bolumId", isEqualTo: section.bolumId)
+          .collection("tblDoctor")
+          .where("hospitalId", isEqualTo: hospital.hospitalId)
+          .where("departmentId", isEqualTo: section.departmentId)
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
@@ -55,9 +55,9 @@ class _BuildDoctorListState extends State<BuildDoctorList> {
   }
 
   _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final dr = Doktor.fromSnapshot(data);
+    final dr = Doctor.fromSnapshot(data);
     return Padding(
-      key: ValueKey(dr.kimlikNo),
+      key: ValueKey(dr.id),
       padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
         decoration: BoxDecoration(
@@ -66,14 +66,14 @@ class _BuildDoctorListState extends State<BuildDoctorList> {
         child: ListTile(
           title: Row(
             children: <Widget>[
-              Text(dr.adi),
+              Text(dr.firstName),
               SizedBox(
                 width: 5.0,
               ),
-              Text(dr.soyadi)
+              Text(dr.lastName)
             ],
           ),
-          subtitle: Text(section.bolumAdi),
+          subtitle: Text(section.departmentName),
           onTap: () {
             Navigator.pop(context, dr);
           },

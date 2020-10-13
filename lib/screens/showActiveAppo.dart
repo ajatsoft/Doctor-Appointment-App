@@ -22,7 +22,7 @@ class _BuildAppointmentListState extends State<BuildAppointmentList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Aktif Randevularınız"),
+        title: Text("Aktif Appointmentsınız"),
       ),
       body: _buildStremBuilder(context),
     );
@@ -31,8 +31,8 @@ class _BuildAppointmentListState extends State<BuildAppointmentList> {
   _buildStremBuilder(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance
-          .collection("tblAktifRandevu")
-          .where('hastaTCKN', isEqualTo: user.kimlikNo)
+          .collection("tbleActiveAppointments")
+          .where('patientToken', isEqualTo: user.id)
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
@@ -71,32 +71,32 @@ class _BuildAppointmentListState extends State<BuildAppointmentList> {
           title: Row(
             children: <Widget>[
               Text(
-                randevu.doktorAdi.toString(),
+                randevu.doctorName.toString(),
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
               ),
               SizedBox(
                 width: 3.0,
               ),
               Text(
-                randevu.doktorSoyadi.toString(),
+                randevu.doctorLastName.toString(),
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
               ),
             ],
           ),
-          subtitle: Text(randevu.randevuTarihi),
+          subtitle: Text(randevu.appointmentDate),
           trailing: Text("İptal Et",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.redAccent),),
           onTap: () {
-            alrtRandevuIptalEt(context, randevu);
+            alrtAppointmentIptalEt(context, randevu);
           },
         ),
       ),
     );
   }
 
-  void alrtRandevuIptalEt(BuildContext context, ActiveAppointment rand) {
-    var alrtRandevu = AlertDialog(
+  void alrtAppointmentIptalEt(BuildContext context, ActiveAppointment rand) {
+    var alrtAppointment = AlertDialog(
       title: Text(
-        "Randevuyu iptal etmek istediğinize emin misiniz?",
+        "Appointment iptal etmek istediğinize emin misiniz?",
         style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
       ),
       actions: <Widget>[
@@ -111,12 +111,12 @@ class _BuildAppointmentListState extends State<BuildAppointmentList> {
         ),
         FlatButton(
           child: Text(
-            "Evet",
+            "Yes",
             textAlign: TextAlign.center,
           ),
           onPressed: () {
             UpdateService()
-                .updateDoctorAppointments(rand.doktorTCKN, rand.randevuTarihi);
+                .updateDoctorAppointments(rand.doctorToken, rand.appointmentDate);
             DelService().deleteActiveAppointment(rand);
             Navigator.pop(context);
             Navigator.pop(context,true);
@@ -128,7 +128,7 @@ class _BuildAppointmentListState extends State<BuildAppointmentList> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alrtRandevu;
+          return alrtAppointment;
         });
   }
 }

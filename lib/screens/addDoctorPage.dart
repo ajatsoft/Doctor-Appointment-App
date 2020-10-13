@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_turtle_v2/dbHelper/addData.dart';
 import 'package:fast_turtle_v2/dbHelper/searchData.dart';
-import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/doctorModel.dart';
 import 'package:fast_turtle_v2/models/hospitalModel.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
 import 'package:fast_turtle_v2/screens/showHospitals.dart';
@@ -17,19 +17,19 @@ class AddDoctor extends StatefulWidget {
 }
 
 class AddDoctorState extends State with ValidationMixin {
-  final doktor = Doktor();
-  Hospital hastane = Hospital();
+  final doctor = Doctor();
+  Hospital hospital = Hospital();
   Section section = Section();
-  bool hastaneSecildiMi = false;
-  bool bolumSecildiMi = false;
+  bool hospitalChosenMi = false;
+  bool departmentChosenMi = false;
   String textMessage = " ";
   double goruntu = 0.0;
   final formKey = GlobalKey<FormState>();
 
   var genders = ["Kadın", "Erkek"];
   String selectedGenders = "Kadın";
-  var dogumTarihi;
-  var raisedButtonText = "Tıkla ve Seç";
+  var birthday;
+  var raisedButtonText = "Tıkla per Seç";
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -38,7 +38,7 @@ class AddDoctorState extends State with ValidationMixin {
       firstDate: DateTime(1920),
       lastDate: DateTime.now(),
     );
-    dogumTarihi = picked;
+    birthday = picked;
   }
 
   @override
@@ -46,7 +46,7 @@ class AddDoctorState extends State with ValidationMixin {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            "Doktor Ekle",
+            "Doctor Ekle",
             style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
           ),
         ),
@@ -59,7 +59,7 @@ class AddDoctorState extends State with ValidationMixin {
                   key: formKey,
                   child: Column(
                     children: <Widget>[
-                      _kimlikNoField(),
+                      _idField(),
                       _passwordField(),
                       _nameField(),
                       _surnameField(),
@@ -70,34 +70,34 @@ class AddDoctorState extends State with ValidationMixin {
                         height: 13.0,
                       ),
                       RaisedButton(
-                        child: Text("Hastane Seçmek İçin Tıkla"),
+                        child: Text("hospital Seçmek İçin Tıkla"),
                         onPressed: () {
-                          bolumSecildiMi = false;
+                          departmentChosenMi = false;
                           hospitalNavigator(BuildHospitalList());
                         },
                       ),
                       SizedBox(
                         height: 16.0,
                       ),
-                      showSelectedHospital(hastaneSecildiMi),
+                      showSelectedHospital(hospitalChosenMi),
                       SizedBox(
                         height: 16.0,
                       ),
                       RaisedButton(
                         child: Text("Bölüm Seçmek İçin Tıkla"),
                         onPressed: () {
-                          if (hastaneSecildiMi) {
-                            sectionNavigator(BuildSectionList(hastane));
+                          if (hospitalChosenMi) {
+                            sectionNavigator(BuildSectionList(hospital));
                           } else {
                             alrtHospital(
-                                context, "Hastane seçmeden bölüm seçemezsiniz");
+                                context, "hospital seçmeden bölüm seçemezsiniz");
                           }
                         },
                       ),
                       SizedBox(
                         height: 16.0,
                       ),
-                      _showSelectedSection(bolumSecildiMi),
+                      _showSelectedSection(departmentChosenMi),
                       SizedBox(
                         height: 16.0,
                       ),
@@ -111,15 +111,15 @@ class AddDoctorState extends State with ValidationMixin {
         ));
   }
 
-  Widget _kimlikNoField() {
+  Widget _idField() {
     return TextFormField(
       decoration: InputDecoration(
-          labelText: "T.C. Kimlik Numarası:",
+          labelText: "T.C. Id Numarası:",
           labelStyle: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold)),
       validator: validateTCNo,
       keyboardType: TextInputType.number,
       onSaved: (String value) {
-        doktor.kimlikNo = value;
+        doctor.id = value;
       },
     );
   }
@@ -131,7 +131,7 @@ class AddDoctorState extends State with ValidationMixin {
           labelStyle: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold)),
       obscureText: true,
       onSaved: (String value) {
-        doktor.sifre = value;
+        doctor.password = value;
       },
     );
   }
@@ -143,7 +143,7 @@ class AddDoctorState extends State with ValidationMixin {
           labelStyle: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold)),
       validator: validateFirstName,
       onSaved: (String value) {
-        doktor.adi = value;
+        doctor.firstName = value;
       },
     );
   }
@@ -155,7 +155,7 @@ class AddDoctorState extends State with ValidationMixin {
           labelStyle: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold)),
       validator: validateLastName,
       onSaved: (String value) {
-        doktor.soyadi = value;
+        doctor.lastName = value;
       },
     );
   }
@@ -164,7 +164,7 @@ class AddDoctorState extends State with ValidationMixin {
     return TextFormField(
       decoration: InputDecoration(labelText: "Doğum Yeri",labelStyle: TextStyle(fontWeight: FontWeight.bold)),
       onSaved: (String value) {
-        doktor.dogumYeri = value;
+        doctor.placeOfBirth = value;
       },
     );
   }
@@ -177,15 +177,15 @@ class AddDoctorState extends State with ValidationMixin {
             Container(
               padding: EdgeInsets.only(right: 25.0),
               child: Text(
-                "Cinsiyet: ",
+                "Gender: ",
                 style: TextStyle(fontSize: 19.0),
               ),
             ),
             DropdownButton<String>(
-              items: genders.map((String cinsiyetler) {
+              items: genders.map((String genderler) {
                 return DropdownMenuItem<String>(
-                  value: cinsiyetler,
-                  child: Text(cinsiyetler),
+                  value: genderler,
+                  child: Text(genderler),
                 );
               }).toList(),
               value: selectedGenders,
@@ -196,7 +196,7 @@ class AddDoctorState extends State with ValidationMixin {
                   } else {
                     this.selectedGenders = tiklanan;
                   }
-                  doktor.cinsiyet = selectedGenders;
+                  doctor.gender = selectedGenders;
                 });
               },
             ),
@@ -210,16 +210,16 @@ class AddDoctorState extends State with ValidationMixin {
       child: Row(
         children: <Widget>[
           Text(
-            "Doğum Tarihi: ",
+            "Doğum Historyi: ",
             style: TextStyle(fontSize: 19.0),
           ),
           RaisedButton(
             child: Text(raisedButtonText),
             onPressed: () {
               _selectDate(context).then((result) => setState(() {
-                    raisedButtonText = dogumTarihi.toString().substring(0, 10);
-                    doktor.dogumTarihi =
-                        dogumTarihi.toString().substring(0, 10);
+                    raisedButtonText = birthday.toString().substring(0, 10);
+                    doctor.birthday =
+                        birthday.toString().substring(0, 10);
                   }));
             },
           )
@@ -242,13 +242,13 @@ class AddDoctorState extends State with ValidationMixin {
   }
 
   void hospitalNavigator(dynamic page) async {
-    hastane = await Navigator.push(
+    hospital = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => page));
 
-    if (hastane == null) {
-      hastaneSecildiMi = false;
+    if (hospital == null) {
+      hospitalChosenMi = false;
     } else {
-      hastaneSecildiMi = true;
+      hospitalChosenMi = true;
     }
   }
 
@@ -257,17 +257,17 @@ class AddDoctorState extends State with ValidationMixin {
         context, MaterialPageRoute(builder: (context) => page));
 
     if (section == null) {
-      bolumSecildiMi = false;
+      departmentChosenMi = false;
     } else {
-      bolumSecildiMi = true;
+      departmentChosenMi = true;
     }
   }
 
-  showSelectedHospital(bool secildiMi) {
+  showSelectedHospital(bool chosenMi) {
     String textMessage = " ";
-    if (secildiMi) {
+    if (chosenMi) {
       setState(() {
-        textMessage = this.hastane.hastaneAdi.toString();
+        textMessage = this.hospital.hospitalName.toString();
       });
       goruntu = 1.0;
     } else {
@@ -279,7 +279,7 @@ class AddDoctorState extends State with ValidationMixin {
         child: Row(
           children: <Widget>[
             Text(
-              "Seçilen Hastane : ",
+              "Seçilen hospital : ",
               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
             Opacity(
@@ -296,12 +296,12 @@ class AddDoctorState extends State with ValidationMixin {
         ));
   }
 
-  _showSelectedSection(bool secildiMi) {
+  _showSelectedSection(bool chosenMi) {
     double goruntu = 0.0;
 
-    if (secildiMi) {
+    if (chosenMi) {
       setState(() {
-        textMessage = this.section.bolumAdi.toString();
+        textMessage = this.section.departmentName.toString();
       });
       goruntu = 1.0;
     } else {
@@ -325,7 +325,7 @@ class AddDoctorState extends State with ValidationMixin {
         ));
   }
 
-  _buildTextMessage(String gelenText) {
+  _buildTextMessage(String incomingText) {
     return Text(
       textMessage,
       style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
@@ -337,29 +337,29 @@ class AddDoctorState extends State with ValidationMixin {
       padding: EdgeInsets.only(top: 17.0),
       child: RaisedButton(
         child: Text(
-          "Tamamla",
+          "Complete",
           style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
         ),
         onPressed: () {
-          if (hastaneSecildiMi &&
-              bolumSecildiMi &&
+          if (hospitalChosenMi &&
+              departmentChosenMi &&
               formKey.currentState.validate()) {
             formKey.currentState.save();
             SearchService()
-                .searchDoctorById(doktor.kimlikNo)
+                .searchDoctorById(doctor.id)
                 .then((QuerySnapshot docs) {
               if (docs.documents.isEmpty) {
                 AddService()
-                    .saveDoctor(this.doktor, this.section, this.hastane);
+                    .saveDoctor(this.doctor, this.section, this.hospital);
                 Navigator.pop(context, true);
               } else {
                 alrtHospital(context,
-                    "Bu kimlik numarasına sahip bir doktor zaten mevcut");
+                    "Bu id numarasına sahip bir doctor zaten mevcut");
               }
             });
           } else {
             alrtHospital(context,
-                "İşlemi tamamlamak için gerekli alanları doldurmanız gerekmektedir");
+                "İşlemi completemak için gerekli alanları doldurmanız gerekmektedir");
           }
         },
       ),

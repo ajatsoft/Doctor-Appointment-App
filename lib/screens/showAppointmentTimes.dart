@@ -1,22 +1,22 @@
-import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/doctorModel.dart';
 import 'package:flutter/material.dart';
 
 class AppointmentTimes extends StatefulWidget {
-  final String randevuTarihi;
-  final Doktor doktor;
-  AppointmentTimes(this.randevuTarihi, this.doktor);
+  final String appointmentDate;
+  final Doctor doctor;
+  AppointmentTimes(this.appointmentDate, this.doctor);
 
   @override
   _AppointmentTimesState createState() =>
-      _AppointmentTimesState(randevuTarihi, doktor);
+      _AppointmentTimesState(appointmentDate, doctor);
 }
 
 class _AppointmentTimesState extends State<AppointmentTimes> {
-  String randevuTarihi;
-  Doktor doktor;
-  List<String> birlesim = [];
-  List<bool> birlesimKontrol = [];
-  List<String> saatler = [
+  String appointmentDate;
+  Doctor doctor;
+  List<String> combination = [];
+  List<bool> combinationKontrol = [];
+  List<String> watches = [
     " , 09:00",
     " , 10:00",
     " , 11:00",
@@ -28,20 +28,20 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
 
   var result = "Seç";
 
-  _AppointmentTimesState(this.randevuTarihi, this.doktor);
+  _AppointmentTimesState(this.appointmentDate, this.doctor);
 
   @override
   void initState() {
     super.initState();
-    for (var item in saatler) {
-      birlesim
-          .add((randevuTarihi.toString().substring(0, 10) + item).toString());
+    for (var item in watches) {
+      combination
+          .add((appointmentDate.toString().substring(0, 10) + item).toString());
     }
-    for (var i = 0; i < birlesim.length; i++) {
-      if (doktor.randevular.contains(birlesim[i])) {
-        birlesimKontrol.insert(i, false);
+    for (var i = 0; i < combination.length; i++) {
+      if (doctor.appointments.contains(combination[i])) {
+        combinationKontrol.insert(i, false);
       } else {
-        birlesimKontrol.insert(i, true);
+        combinationKontrol.insert(i, true);
       }
     }
   }
@@ -52,7 +52,7 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
         appBar: AppBar(
           leading: Icon(Icons.access_time),
           centerTitle: true,
-          title: Text("Randevu Saatleri"),
+          title: Text("Appointment Watchesi"),
         ),
         body: Container(
           padding: EdgeInsets.only(top: 50.0, left: 25.0, right: 30.0),
@@ -60,7 +60,7 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
             children: <Widget>[
               Container(
                 child: Text(
-                  "Belirtilen saatler randevu başlangıç saatleridir. Her randevuya 1 saat ayrılmaktadır.",
+                  "Belirtilen watches randevu başlangıç watchesidir. Her randevuya 1 saat ayrılmaktadır.",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
@@ -145,7 +145,7 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
 
   _buildButton(int index, String textMessage) {
     chooseColor() {
-      if (birlesimKontrol[index]) {
+      if (combinationKontrol[index]) {
         return Colors.greenAccent;
       } else {
         return Colors.redAccent;
@@ -167,8 +167,8 @@ class _AppointmentTimesState extends State<AppointmentTimes> {
   }
 
   _buttonPressEvent(int index) {
-    if (birlesimKontrol[index]) {
-      Navigator.pop(context, birlesim[index]);
+    if (combinationKontrol[index]) {
+      Navigator.pop(context, combination[index]);
     } else {
       alrtHospital(context, "Bu seans seçilemez.");
     }

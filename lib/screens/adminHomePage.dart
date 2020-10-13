@@ -40,11 +40,11 @@ class _AdminHomePageState extends State<AdminHomePage> {
           child: Column(
             children: <Widget>[
               _bodyTitle(),
-              _buildTitle("Hastane İşlemleri"),
+              _buildTitle("hospital İşlemleri"),
               SizedBox(
                 height: 9.0,
               ),
-              _hastaneIslemButonlari(),
+              _hospitalOperationButonlari(),
               SizedBox(
                 height: 9.0,
               ),
@@ -52,15 +52,15 @@ class _AdminHomePageState extends State<AdminHomePage> {
               SizedBox(
                 height: 9.0,
               ),
-              _bolumIslemButonlari(),
+              _departmentOperationButonlari(),
               SizedBox(
                 height: 9.0,
               ),
-              _buildTitle("Doktor İşlemleri"),
+              _buildTitle("Doctor İşlemleri"),
               SizedBox(
                 height: 9.0,
               ),
-              _doktorIslemButonlari(),
+              _doctorOperationButonlari(),
               SizedBox(
                 height: 9.0,
               ),
@@ -68,7 +68,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
               SizedBox(
                 height: 9.0,
               ),
-              _digerIslemButonlari()
+              _digerOperationButonlari()
             ],
           ),
         ));
@@ -135,22 +135,22 @@ class _AdminHomePageState extends State<AdminHomePage> {
     );
   }
 
-  _hastaneIslemButonlari() {
+  _hospitalOperationButonlari() {
     return Container(
       child: Column(
         children: <Widget>[
-          _butonOlustur("Hastane Güncelle", 0),
+          _butonOlustur("hospital Güncelle", 0),
           SizedBox(
             height: 5.0,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _butonOlustur("Hastane Ekle", 1),
+              _butonOlustur("hospital Ekle", 1),
               SizedBox(
                 width: 10.0,
               ),
-              _butonOlustur("Hastane Sil", 2),
+              _butonOlustur("hospital Sil", 2),
             ],
           )
         ],
@@ -158,7 +158,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
     );
   }
 
-  _bolumIslemButonlari() {
+  _departmentOperationButonlari() {
     return Container(
       child: Column(
         children: <Widget>[
@@ -181,22 +181,22 @@ class _AdminHomePageState extends State<AdminHomePage> {
     );
   }
 
-  _doktorIslemButonlari() {
+  _doctorOperationButonlari() {
     return Container(
       child: Column(
         children: <Widget>[
-          _butonOlustur("Doktor Güncelle", 6),
+          _butonOlustur("Doctor Güncelle", 6),
           SizedBox(
             height: 5.0,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _butonOlustur("Doktor Ekle", 7),
+              _butonOlustur("Doctor Ekle", 7),
               SizedBox(
                 width: 10.0,
               ),
-              _butonOlustur("Doktor Sil", 8),
+              _butonOlustur("Doctor Sil", 8),
             ],
           )
         ],
@@ -204,18 +204,18 @@ class _AdminHomePageState extends State<AdminHomePage> {
     );
   }
 
-  _digerIslemButonlari() {
+  _digerOperationButonlari() {
     return Container(
       child: Column(
         children: <Widget>[
-          _butonOlustur("Randevu Kapat", 9),
+          _butonOlustur("Appointment Kapat", 9),
           SizedBox(
             height: 5.0,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _butonOlustur("Randevu Aç", 10),
+              _butonOlustur("Appointment Aç", 10),
               SizedBox(
                 width: 10.0,
               ),
@@ -298,7 +298,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
         context, MaterialPageRoute(builder: (context) => page));
 
     if (result != null && result == true) {
-      alrtDone(context, "İşlem Tamamlandı");
+      alrtDone(context, "İşlem Completendı");
     }
   }
 

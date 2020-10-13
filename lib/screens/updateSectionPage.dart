@@ -15,13 +15,13 @@ class UpdateSection extends StatefulWidget {
 }
 
 class UpdateSectionState extends State {
-  Hospital hastane = Hospital();
+  Hospital hospital = Hospital();
   double goruntu = 0.0;
-  bool hastaneSecildiMi = false;
-  bool bolumSecildiMi = false;
+  bool hospitalChosenMi = false;
+  bool departmentChosenMi = false;
   Section section = Section();
   String textMessage = " ";
-  String yeniBolumAdi;
+  String yeniDepartmentName;
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -47,12 +47,12 @@ class UpdateSectionState extends State {
                     Container(
                       child: RaisedButton(
                         child: Text(
-                          "Hastane Seçmek İçin Tıkla",
+                          "hospital Seçmek İçin Tıkla",
                           style: TextStyle(
                               fontSize: 20.0, fontWeight: FontWeight.bold),
                         ),
                         onPressed: () {
-                          bolumSecildiMi = false;
+                          departmentChosenMi = false;
                           hospitalNavigator(BuildHospitalList());
                         },
                       ),
@@ -60,33 +60,33 @@ class UpdateSectionState extends State {
                     SizedBox(
                       height: 16.0,
                     ),
-                    showSelectedHospital(hastaneSecildiMi),
+                    showSelectedHospital(hospitalChosenMi),
                     SizedBox(
                       height: 30.0,
                     ),
                     RaisedButton(
                       child: Text("Bölüm Seçmek İçin Tıkla"),
                       onPressed: () {
-                        if (hastaneSecildiMi) {
-                          sectionNavigator(BuildSectionList(hastane));
+                        if (hospitalChosenMi) {
+                          sectionNavigator(BuildSectionList(hospital));
                         } else {
                           alrtHospital(
-                              context, "Hastane seçmeden bölüm seçemezsiniz");
+                              context, "hospital seçmeden bölüm seçemezsiniz");
                         }
                       },
                     ),
                     SizedBox(
                       height: 16.0,
                     ),
-                    _showSelectedSection(bolumSecildiMi),
+                    _showSelectedSection(departmentChosenMi),
                     SizedBox(
                       height: 30.0,
                     ),
-                    _yeniBolumAdi(),
+                    _yeniDepartmentName(),
                     SizedBox(
                       height: 20.0,
                     ),
-                    _guncelleButonu()
+                    _guncelleButton()
                   ],
                 ),
               ),
@@ -97,36 +97,36 @@ class UpdateSectionState extends State {
     );
   }
 
-  _yeniBolumAdi() {
+  _yeniDepartmentName() {
     return TextFormField(
       decoration: InputDecoration(
-          labelText: "Yeni Bölüm Adini Girin:",
+          labelText: "Yeni Bölüm Nameni Girin:",
           labelStyle: TextStyle(
               fontSize: 17.0,
               fontWeight: FontWeight.bold,
               color: Colors.black)),
       onSaved: (String value) {
-        yeniBolumAdi = value;
+        yeniDepartmentName = value;
       },
     );
   }
 
   void hospitalNavigator(dynamic page) async {
-    hastane = await Navigator.push(
+    hospital = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => page));
 
-    if (hastane == null) {
-      hastaneSecildiMi = false;
+    if (hospital == null) {
+      hospitalChosenMi = false;
     } else {
-      hastaneSecildiMi = true;
+      hospitalChosenMi = true;
     }
   }
 
-  showSelectedHospital(bool secildiMi) {
+  showSelectedHospital(bool chosenMi) {
     String textMessage = " ";
-    if (secildiMi) {
+    if (chosenMi) {
       setState(() {
-        textMessage = this.hastane.hastaneAdi.toString();
+        textMessage = this.hospital.hospitalName.toString();
       });
       goruntu = 1.0;
     } else {
@@ -138,7 +138,7 @@ class UpdateSectionState extends State {
         child: Row(
           children: <Widget>[
             Text(
-              "Seçilen Hastane : ",
+              "Seçilen hospital : ",
               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
             Opacity(
@@ -160,9 +160,9 @@ class UpdateSectionState extends State {
         context, MaterialPageRoute(builder: (context) => page));
 
     if (section == null) {
-      bolumSecildiMi = false;
+      departmentChosenMi = false;
     } else {
-      bolumSecildiMi = true;
+      departmentChosenMi = true;
     }
   }
 
@@ -179,12 +179,12 @@ class UpdateSectionState extends State {
         });
   }
 
-  _showSelectedSection(bool secildiMi) {
+  _showSelectedSection(bool chosenMi) {
     double goruntu = 0.0;
 
-    if (secildiMi) {
+    if (chosenMi) {
       setState(() {
-        textMessage = this.section.bolumAdi.toString();
+        textMessage = this.section.departmentName.toString();
       });
       goruntu = 1.0;
     } else {
@@ -208,14 +208,14 @@ class UpdateSectionState extends State {
         ));
   }
 
-  _buildTextMessage(String gelenText) {
+  _buildTextMessage(String incomingText) {
     return Text(
       textMessage,
       style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
     );
   }
 
-  _guncelleButonu() {
+  _guncelleButton() {
     return RaisedButton(
       child: Text(
         "Bölümü Güncelle",
@@ -227,15 +227,15 @@ class UpdateSectionState extends State {
           formKey.currentState.save();
           SearchService()
               .searchSectionByHospitalIdAndSectionName(
-                  hastane.hastaneId, yeniBolumAdi)
+                  hospital.hospitalId, yeniDepartmentName)
               .then((QuerySnapshot docs) {
-            if (docs.documents.isEmpty && section.bolumAdi != yeniBolumAdi) {
-              section.bolumAdi = yeniBolumAdi;
+            if (docs.documents.isEmpty && section.departmentName != yeniDepartmentName) {
+              section.departmentName = yeniDepartmentName;
               UpdateService().updateSection(section);
               Navigator.pop(context, true);
             } else {
               alrtHospital(context,
-                  "Seçtiğiniz hastanede aynı isimde bir bölüm zaten mevcut");
+                  "Seçtiğiniz hospitalde aynı isimde bir bölüm zaten mevcut");
             }
           });
         } else {

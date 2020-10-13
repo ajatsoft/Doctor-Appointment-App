@@ -1,165 +1,165 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/doctorModel.dart';
 import 'package:fast_turtle_v2/models/passiveAppoModel.dart';
 
 class SearchService {
-  searchById(String gelenId, String gelenPassword, int formKey) {
+  searchById(String incomingId, String incomingPassword, int formKey) {
     if (formKey == 0) {
       return Firestore.instance
-          .collection('tblKullanici')
-          .where('kimlikNo', isEqualTo: gelenId)
-          .where('sifre', isEqualTo: gelenPassword)
+          .collection('tblUser')
+          .where('id', isEqualTo: incomingId)
+          .where('password', isEqualTo: incomingPassword)
           .getDocuments();
     } else if (formKey == 1) {
       return Firestore.instance
-          .collection('tblDoktor')
-          .where('kimlikNo', isEqualTo: gelenId)
-          .where('sifre', isEqualTo: gelenPassword)
+          .collection('tblDoctor')
+          .where('id', isEqualTo: incomingId)
+          .where('password', isEqualTo: incomingPassword)
           .getDocuments();
     } else if (formKey == 2) {
       return Firestore.instance
           .collection('tblAdmin')
-          .where('nickname', isEqualTo: gelenId)
-          .where('password', isEqualTo: gelenPassword)
+          .where('nickname', isEqualTo: incomingId)
+          .where('password', isEqualTo: incomingPassword)
           .getDocuments();
     }
   }
 
-  searchByPassword(String gelenSifre, int formKey) {
+  searchByPassword(String incomingpassword, int formKey) {
     if (formKey == 0) {
       return Firestore.instance
-          .collection('tblKullanici')
-          .where('sifre', isEqualTo: gelenSifre)
+          .collection('tblUser')
+          .where('password', isEqualTo: incomingpassword)
           .getDocuments();
     } else if (formKey == 1) {
       return Firestore.instance
-          .collection('tblDoktor')
-          .where('sifre', isEqualTo: gelenSifre)
+          .collection('tblDoctor')
+          .where('password', isEqualTo: incomingpassword)
           .getDocuments();
     } else if (formKey == 2) {
       return Firestore.instance
           .collection('tblAdmin')
-          .where('sifre', isEqualTo: gelenSifre)
+          .where('password', isEqualTo: incomingpassword)
           .getDocuments();
     }
   }
 
   searchHospitalByName(String value) {
     return Firestore.instance
-        .collection("tblHastane")
-        .where('hastaneAdi', isEqualTo: value)
+        .collection("tblhospital")
+        .where('hospitalName', isEqualTo: value)
         .getDocuments();
   }
 
   searchHospitalById(int value) {
     return Firestore.instance
-        .collection("tblHastane")
-        .where('hastaneId', isEqualTo: value)
+        .collection("tblhospital")
+        .where('hospitalId', isEqualTo: value)
         .getDocuments();
   }
 
   searchSectionById(int value) {
     return Firestore.instance
-        .collection("tblBolum")
-        .where('bolumId', isEqualTo: value)
+        .collection("tblDepartment")
+        .where('departmentId', isEqualTo: value)
         .getDocuments();
   }
 
   searchSectionsByHospitalId(int hospitalId) {
     return Firestore.instance
-        .collection("tblBolum")
-        .where('hastaneId', isEqualTo: hospitalId)
+        .collection("tblDepartment")
+        .where('hospitalId', isEqualTo: hospitalId)
         .getDocuments();
   }
 
   searchSectionByHospitalIdAndSectionName(int hospitalId, String sectionName) {
     return Firestore.instance
-        .collection("tblBolum")
-        .where('hastaneId', isEqualTo: hospitalId)
-        .where('bolumAdi', isEqualTo: sectionName)
+        .collection("tblDepartment")
+        .where('hospitalId', isEqualTo: hospitalId)
+        .where('departmentName', isEqualTo: sectionName)
         .getDocuments();
   }
 
-  searchDoctorAppointment(Doktor doktor, String tarih) {
+  searchDoctorAppointment(Doctor doctor, String history) {
     return Firestore.instance
-        .collection("tblAktifRandevu")
-        .where('doktorTCKN', isEqualTo: doktor.kimlikNo)
-        .where('randevuTarihi', isEqualTo: tarih)
+        .collection("tbleActiveAppointments")
+        .where('doctorToken', isEqualTo: doctor.id)
+        .where('appointmentDate', isEqualTo: history)
         .getDocuments();
   }
 
-  searchDoctorById(String kimlikNo) {
+  searchDoctorById(String id) {
     return Firestore.instance
-        .collection("tblDoktor")
-        .where('kimlikNo', isEqualTo: kimlikNo)
+        .collection("tblDoctor")
+        .where('id', isEqualTo: id)
         .getDocuments();
   }
 
-  searchUserById(String kimlikNo) {
+  searchUserById(String id) {
     return Firestore.instance
-        .collection("tblKullanici")
-        .where('kimlikNo', isEqualTo: kimlikNo)
+        .collection("tblUser")
+        .where('id', isEqualTo: id)
         .getDocuments();
   }
 
   getHospitals() {
-    return Firestore.instance.collection("tblHastane").getDocuments();
+    return Firestore.instance.collection("tblhospital").getDocuments();
   }
 
   getSections() {
-    return Firestore.instance.collection("tblBolum").getDocuments();
+    return Firestore.instance.collection("tblDepartment").getDocuments();
   }
 
   getLastSectionId() {
     return Firestore.instance
-        .collection("tblBolum")
-        .orderBy("bolumId", descending: true)
+        .collection("tblDepartment")
+        .orderBy("departmentId", descending: true)
         .getDocuments();
   }
 
   getLastHospitalId() {
     return Firestore.instance
-        .collection("tblHastane")
-        .orderBy("hastaneId", descending: true)
+        .collection("tblhospital")
+        .orderBy("hospitalId", descending: true)
         .getDocuments();
   }
 
   getDoctors() {
-    return Firestore.instance.collection("tblDoktor").getDocuments();
+    return Firestore.instance.collection("tblDoctor").getDocuments();
   }
 
   getPastAppointments() {
-    return Firestore.instance.collection("tblRandevuGecmisi").getDocuments();
+    return Firestore.instance.collection("tblAppointmentHistory").getDocuments();
   }
 
-  searchPastAppointmentsByHastaTCKN(String tckn) {
+  searchPastAppointmentsByPatientToken(String tckn) {
     return Firestore.instance
-        .collection("tblRandevuGecmisi")
-        .where('hastaTCKN', isEqualTo: tckn)
+        .collection("tblAppointmentHistory")
+        .where('patientToken', isEqualTo: tckn)
         .getDocuments();
   }
 
-  searchActiveAppointmentsByHastaTCKN(String tckn) {
+  searchActiveAppointmentsByPatientToken(String tckn) {
     return Firestore.instance
-        .collection("tblAktifRandevu")
-        .where('hastaTCKN', isEqualTo: tckn)
+        .collection("tbleActiveAppointments")
+        .where('patientToken', isEqualTo: tckn)
         .getDocuments();
   }
 
-  searchActiveAppointmentsWithHastaTCKNAndDoctorTCKN(
-      String hastaTCKN, String doktorTCKN) {
+  searchActiveAppointmentsWithPatientTokenAndDoctorToken(
+      String patientToken, String doctorToken) {
     return Firestore.instance
-        .collection("tblAktifRandevu")
-        .where('hastaTCKN', isEqualTo: hastaTCKN)
-        .where('doktorTCKN', isEqualTo: doktorTCKN)
+        .collection("tbleActiveAppointments")
+        .where('patientToken', isEqualTo: patientToken)
+        .where('doctorToken', isEqualTo: doctorToken)
         .getDocuments();
   }
 
   searchDocOnUserFavList(PassAppointment rand) {
     return Firestore.instance
         .collection("tblFavoriler")
-        .where('hastaTCKN', isEqualTo: rand.hastaTCKN)
-        .where('doktorTCKN', isEqualTo: rand.doktorTCKN)
+        .where('patientToken', isEqualTo: rand.patientToken)
+        .where('doctorToken', isEqualTo: rand.doctorToken)
         .getDocuments();
   }
 }

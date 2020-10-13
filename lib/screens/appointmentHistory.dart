@@ -21,7 +21,7 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Geçmiş Randevularınız"),
+        title: Text("Geçmiş Appointmentsınız"),
       ),
       body: _buildStremBuilder(context),
     );
@@ -30,8 +30,8 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
   _buildStremBuilder(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance
-          .collection("tblRandevuGecmisi")
-          .where('hastaTCKN', isEqualTo: user.kimlikNo)
+          .collection("tblAppointmentHistory")
+          .where('patientToken', isEqualTo: user.id)
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
@@ -69,19 +69,19 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
           title: Row(
             children: <Widget>[
               Text(
-                randevu.doktorAdi.toString(),
+                randevu.doctorName.toString(),
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
               ),
               SizedBox(
                 width: 3.0,
               ),
               Text(
-                randevu.doktorSoyadi.toString(),
+                randevu.doctorLastName.toString(),
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
               ),
             ],
           ),
-          subtitle: Text(randevu.islemTarihi),
+          subtitle: Text(randevu.operationHistoryi),
           trailing: Text(
             "Favorilere Ekle",
             style:
@@ -96,7 +96,7 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
   }
 
   void alrtFavEkle(BuildContext context, PassAppointment rand) {
-    var alrtRandevu = AlertDialog(
+    var alrtAppointment = AlertDialog(
       title: Text(
         "Favorilere eklemek istediğinize emin misiniz?",
         style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
@@ -113,7 +113,7 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
         ),
         FlatButton(
           child: Text(
-            "Evet",
+            "Yes",
             textAlign: TextAlign.center,
           ),
           onPressed: () {
@@ -122,12 +122,12 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
                 .then((QuerySnapshot docs) {
               if (docs.documents.isEmpty) {
                 AddService().addDoctorToUserFavList(rand);
-                UpdateService().updateDoktorFavCountPlus(rand.doktorTCKN);
+                UpdateService().updateDoctorFavCountPlus(rand.doctorToken);
                 Navigator.pop(context);
                 Navigator.pop(context, true);
               } else {
                 Navigator.pop(context);
-                alrtHospital(context, "Favori listenizde olan bir doktoru tekrar ekleyemezsiniz.");
+                alrtHospital(context, "Favori listenizde olan bir doctoru tekrar ekleyemezsiniz.");
               }
             });
           },
@@ -138,7 +138,7 @@ class _AppointmentHistoryState extends State<AppointmentHistory> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alrtRandevu;
+          return alrtAppointment;
         });
   }
 

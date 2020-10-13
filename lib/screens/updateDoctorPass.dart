@@ -1,22 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_turtle_v2/dbHelper/searchData.dart';
 import 'package:fast_turtle_v2/dbHelper/updateData.dart';
-import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/doctorModel.dart';
 import 'package:flutter/material.dart';
 
 class OnlyUpdatePassword extends StatefulWidget {
-  final Doktor doktor;
-  OnlyUpdatePassword(this.doktor);
+  final Doctor doctor;
+  OnlyUpdatePassword(this.doctor);
   @override
-  _OnlyUpdatePasswordState createState() => _OnlyUpdatePasswordState(doktor);
+  _OnlyUpdatePasswordState createState() => _OnlyUpdatePasswordState(doctor);
 }
 
 class _OnlyUpdatePasswordState extends State<OnlyUpdatePassword> {
-  Doktor doktor;
-  _OnlyUpdatePasswordState(this.doktor);
+  Doctor doctor;
+  _OnlyUpdatePasswordState(this.doctor);
   final formKey = GlobalKey<FormState>();
-  String yeniSifre;
-  String eskiSifre;
+  String yenipassword;
+  String eskipassword;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,11 +30,11 @@ class _OnlyUpdatePasswordState extends State<OnlyUpdatePassword> {
                 key: formKey,
                 child: Column(
                   children: <Widget>[
-                    eskiSifreField(),
+                    eskipasswordField(),
                     SizedBox(
                       height: 13.0,
                     ),
-                    sifreField(),
+                    passwordField(),
                     SizedBox(
                       height: 45.0,
                     ),
@@ -45,27 +45,27 @@ class _OnlyUpdatePasswordState extends State<OnlyUpdatePassword> {
         ));
   }
 
-  Widget sifreField() {
+  Widget passwordField() {
     return TextFormField(
       decoration: InputDecoration(
           labelText: "Yeni Şifre",
           labelStyle:
               TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
       onSaved: (String value) {
-        yeniSifre = value;
+        yenipassword = value;
       },
       obscureText: true,
     );
   }
 
-  Widget eskiSifreField() {
+  Widget eskipasswordField() {
     return TextFormField(
       decoration: InputDecoration(
           labelText: "Eski Şifre",
           labelStyle:
               TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
       onSaved: (String value) {
-        eskiSifre = value;
+        eskipassword = value;
       },
       obscureText: true,
     );
@@ -74,17 +74,17 @@ class _OnlyUpdatePasswordState extends State<OnlyUpdatePassword> {
   submitButton() {
     return Container(
       child: RaisedButton(
-        child: Text("Tamamla"),
+        child: Text("Complete"),
         onPressed: () {
           if (formKey.currentState.validate()) {
             formKey.currentState.save();
-            if (doktor.sifre != yeniSifre && doktor.sifre == eskiSifre) {
-              doktor.sifre = yeniSifre;
+            if (doctor.password != yenipassword && doctor.password == eskipassword) {
+              doctor.password = yenipassword;
               SearchService()
-                  .searchDoctorById(doktor.kimlikNo)
+                  .searchDoctorById(doctor.id)
                   .then((QuerySnapshot docs) {
-                doktor.reference = docs.documents[0].reference;
-                UpdateService().updateDoktor(doktor);
+                doctor.reference = docs.documents[0].reference;
+                UpdateService().updateDoctor(doctor);
               });
 
               Navigator.pop(context, true);

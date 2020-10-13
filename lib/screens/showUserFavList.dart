@@ -16,13 +16,13 @@ class _BuildUserFavListState extends State<BuildUserFavList> {
   User _user;
   _BuildUserFavListState(this._user);
 
-  var favoriDoktorListesi = [];
+  var favoriDoctorListesi = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Favori Doktorlar"),
+        title: Text("Favori Doctorlar"),
       ),
       body: _buildStremBuilder(context),
     );
@@ -32,7 +32,7 @@ class _BuildUserFavListState extends State<BuildUserFavList> {
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance
           .collection("tblFavoriler")
-          .where("hastaTCKN", isEqualTo: _user.kimlikNo)
+          .where("patientToken", isEqualTo: _user.id)
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
@@ -57,7 +57,7 @@ class _BuildUserFavListState extends State<BuildUserFavList> {
     final favDoc = FavoriteList.fromSnapshot(data);
     favDoc.reference = FavoriteList.fromSnapshot(data).reference;
     return Padding(
-      key: ValueKey(favDoc.hastaTCKN),
+      key: ValueKey(favDoc.patientToken),
       padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
         decoration: BoxDecoration(
@@ -67,7 +67,7 @@ class _BuildUserFavListState extends State<BuildUserFavList> {
           title: Row(
             children: <Widget>[
               Text(
-                favDoc.doktorAdi,
+                favDoc.doctorName,
                 style:
                     TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
               ),
@@ -75,7 +75,7 @@ class _BuildUserFavListState extends State<BuildUserFavList> {
                 width: 5.0,
               ),
               Text(
-                favDoc.doktorSoyadi,
+                favDoc.doctorLastName,
                 style:
                     TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
               )
@@ -112,11 +112,11 @@ class _BuildUserFavListState extends State<BuildUserFavList> {
         ),
         FlatButton(
           child: Text(
-            "Evet",
+            "Yes",
             textAlign: TextAlign.center,
           ),
           onPressed: () {
-            UpdateService().updateDoktorFavCountMinus(fav.doktorTCKN);
+            UpdateService().updateDoctorFavCountMinus(fav.doctorToken);
             DelService().deleteDocFromUserFavList(fav);
             Navigator.pop(context);
             Navigator.pop(context, true);

@@ -4,17 +4,17 @@ class Admin {
   int id;
   String nickname;
   String password;
-  var kapatilanSaatler = [];
+  var closedWatches = [];
 
   DocumentReference reference;
 
-  Admin({this.id, this.nickname, this.password, this.kapatilanSaatler});
+  Admin({this.id, this.nickname, this.password, this.closedWatches});
 
   Admin.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
     nickname = json['nickname'];
     password = json['password'];
-    kapatilanSaatler = List.from(json['kapatilanSaatler']);
+    closedWatches = List.from(json['closedWatches']);
   }
 
   Map<String, dynamic> toJson() {
@@ -22,7 +22,7 @@ class Admin {
     data['Id'] = this.id;
     data['nickname'] = this.nickname;
     data['password'] = this.password;
-    data['kapatilanSaatler'] = this.kapatilanSaatler;
+    data['closedWatches'] = this.closedWatches;
     return data;
   }
 
@@ -30,8 +30,8 @@ class Admin {
       : id = map["Id"],
         nickname = map["nickname"],
         password = map["password"],
-        kapatilanSaatler = List.from(map["kapatilanSaatler"]);
+        closedWatches = List.from(map["closedWatches"]);
 
   Admin.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 }

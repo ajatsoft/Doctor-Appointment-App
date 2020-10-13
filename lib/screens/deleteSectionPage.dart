@@ -13,10 +13,10 @@ class DeleteSection extends StatefulWidget {
 }
 
 class DeleteSectionState extends State {
-  Hospital hastane = Hospital();
+  Hospital hospital = Hospital();
   Section section = Section();
-  bool hastaneSecildiMi = false;
-  bool bolumSecildiMi = false;
+  bool hospitalChosenMi = false;
+  bool departmentChosenMi = false;
   String textMessage = " ";
   double goruntu = 0.0;
 
@@ -52,7 +52,7 @@ class DeleteSectionState extends State {
                     ),
                     Container(
                       child: Text(
-                        "Bir bölüm sildiğinizde, o bölümde çalışan doktorları ve o doktorların randevularını da silmiş olacaksınız.",
+                        "Bir bölüm sildiğinizde, o bölümde çalışan doctorları per o doctorların appointmentsını da silmiş olacaksınız.",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20.0),
                       ),
@@ -61,38 +61,38 @@ class DeleteSectionState extends State {
                       height: 13.0,
                     ),
                     RaisedButton(
-                      child: Text("Hastane Seçmek İçin Tıkla"),
+                      child: Text("hospital Seçmek İçin Tıkla"),
                       onPressed: () {
-                        bolumSecildiMi = false;
+                        departmentChosenMi = false;
                         hospitalNavigator(BuildHospitalList());
                       },
                     ),
                     SizedBox(
                       height: 16.0,
                     ),
-                    showSelectedHospital(hastaneSecildiMi),
+                    showSelectedHospital(hospitalChosenMi),
                     SizedBox(
                       height: 16.0,
                     ),
                     RaisedButton(
                       child: Text("Bölüm Seçmek İçin Tıkla"),
                       onPressed: () {
-                        if (hastaneSecildiMi) {
-                          sectionNavigator(BuildSectionList(hastane));
+                        if (hospitalChosenMi) {
+                          sectionNavigator(BuildSectionList(hospital));
                         } else {
                           alrtHospital(
-                              context, "Hastane seçmeden bölüm seçemezsiniz");
+                              context, "hospital seçmeden bölüm seçemezsiniz");
                         }
                       },
                     ),
                     SizedBox(
                       height: 16.0,
                     ),
-                    _showSelectedSection(bolumSecildiMi),
+                    _showSelectedSection(departmentChosenMi),
                     SizedBox(
                       height: 16.0,
                     ),
-                    _silButonu()
+                    _silButton()
                   ],
                 ),
               ),
@@ -117,13 +117,13 @@ class DeleteSectionState extends State {
   }
 
   void hospitalNavigator(dynamic page) async {
-    hastane = await Navigator.push(
+    hospital = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => page));
 
-    if (hastane == null) {
-      hastaneSecildiMi = false;
+    if (hospital == null) {
+      hospitalChosenMi = false;
     } else {
-      hastaneSecildiMi = true;
+      hospitalChosenMi = true;
     }
   }
 
@@ -132,17 +132,17 @@ class DeleteSectionState extends State {
         context, MaterialPageRoute(builder: (context) => page));
 
     if (section == null) {
-      bolumSecildiMi = false;
+      departmentChosenMi = false;
     } else {
-      bolumSecildiMi = true;
+      departmentChosenMi = true;
     }
   }
 
-  showSelectedHospital(bool secildiMi) {
+  showSelectedHospital(bool chosenMi) {
     String textMessage = " ";
-    if (secildiMi) {
+    if (chosenMi) {
       setState(() {
-        textMessage = this.hastane.hastaneAdi.toString();
+        textMessage = this.hospital.hospitalName.toString();
       });
       goruntu = 1.0;
     } else {
@@ -154,7 +154,7 @@ class DeleteSectionState extends State {
         child: Row(
           children: <Widget>[
             Text(
-              "Seçilen Hastane : ",
+              "Seçilen hospital : ",
               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
             Opacity(
@@ -171,12 +171,12 @@ class DeleteSectionState extends State {
         ));
   }
 
-  _showSelectedSection(bool secildiMi) {
+  _showSelectedSection(bool chosenMi) {
     double goruntu = 0.0;
 
-    if (secildiMi) {
+    if (chosenMi) {
       setState(() {
-        textMessage = this.section.bolumAdi.toString();
+        textMessage = this.section.departmentName.toString();
       });
       goruntu = 1.0;
     } else {
@@ -200,14 +200,14 @@ class DeleteSectionState extends State {
         ));
   }
 
-  _buildTextMessage(String gelenText) {
+  _buildTextMessage(String incomingText) {
     return Text(
       textMessage,
       style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
     );
   }
 
-  _silButonu() {
+  _silButton() {
     return RaisedButton(
       child: Text(
         "Seçili Bölümü Sil",
@@ -215,8 +215,8 @@ class DeleteSectionState extends State {
         style: TextStyle(fontSize: 20.0),
       ),
       onPressed: () {
-        if (hastaneSecildiMi && bolumSecildiMi) {
-          alrtBolumSil(context);
+        if (hospitalChosenMi && departmentChosenMi) {
+          alrtDepartmentSil(context);
         } else {
           alrtHospital(context, "Eksik bilgi var");
         }
@@ -224,10 +224,10 @@ class DeleteSectionState extends State {
     );
   }
 
-  void alrtBolumSil(BuildContext context) {
-    var alrtRandevu = AlertDialog(
+  void alrtDepartmentSil(BuildContext context) {
+    var alrtAppointment = AlertDialog(
       title: Text(
-        " Bölüm ile birlikte bölüme kayıtlı bütün doktorlar ve randevularıda silinecektir. Devam etmek istiyor musunuz?",
+        " Bölüm ile birlikte bölüme kayıtlı bütün doctorlar per appointmentsıda silinecektir. Devam etmek istiyor musunuz?",
         style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
       ),
       actions: <Widget>[
@@ -242,7 +242,7 @@ class DeleteSectionState extends State {
         ),
         FlatButton(
           child: Text(
-            "Evet",
+            "Yes",
             textAlign: TextAlign.center,
           ),
           onPressed: () {
@@ -257,7 +257,7 @@ class DeleteSectionState extends State {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alrtRandevu;
+          return alrtAppointment;
         });
   }
 }

@@ -3,20 +3,20 @@ import 'package:fast_turtle_v2/dbHelper/addData.dart';
 import 'package:fast_turtle_v2/dbHelper/delData.dart';
 import 'package:fast_turtle_v2/dbHelper/updateData.dart';
 import 'package:fast_turtle_v2/models/activeAppointmentModel.dart';
-import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/doctorModel.dart';
 import 'package:flutter/material.dart';
 
 class BuildAppointmentListForDoctor extends StatefulWidget {
-  final Doktor doktor;
-  BuildAppointmentListForDoctor(this.doktor);
+  final Doctor doctor;
+  BuildAppointmentListForDoctor(this.doctor);
   @override
   _BuildAppointmentListState createState() =>
-      _BuildAppointmentListState(doktor);
+      _BuildAppointmentListState(doctor);
 }
 
 class _BuildAppointmentListState extends State<BuildAppointmentListForDoctor> {
-  Doktor doktor;
-  _BuildAppointmentListState(this.doktor);
+  Doctor doctor;
+  _BuildAppointmentListState(this.doctor);
 
   String gonder;
 
@@ -24,7 +24,7 @@ class _BuildAppointmentListState extends State<BuildAppointmentListForDoctor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Bekleyen Randevularınız"),
+        title: Text("Pending Appointments"),
       ),
       body: _buildStremBuilder(context),
     );
@@ -33,9 +33,9 @@ class _BuildAppointmentListState extends State<BuildAppointmentListForDoctor> {
   _buildStremBuilder(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance
-          .collection("tblAktifRandevu")
-          .where('doktorTCKN', isEqualTo: doktor.kimlikNo)
-          .where('randevuTarihi',
+          .collection("tbleActiveAppointments")
+          .where('doctorToken', isEqualTo: doctor.id)
+          .where('appointmentDate',
               isLessThanOrEqualTo: (DateTime.now()
                   .add(Duration(days: 30))
                   .toString()
@@ -77,47 +77,47 @@ class _BuildAppointmentListState extends State<BuildAppointmentListForDoctor> {
           title: Row(
             children: <Widget>[
               Text(
-                randevu.hastaAdi.toString(),
+                randevu.patientName.toString(),
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
               ),
               SizedBox(
                 width: 3.0,
               ),
               Text(
-                randevu.hastaSoyadi.toString(),
+                randevu.patientLastName.toString(),
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
               ),
             ],
           ),
-          subtitle: Text(randevu.randevuTarihi),
+          subtitle: Text(randevu.appointmentDate),
           trailing: Text(
-            "Tamamla",
+            "Complete",
             style:
                 TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
           ),
           onTap: () {
-            alrtRandevuTamamla(context, randevu);
+            alrtAppointmentComplete(context, randevu);
           },
         ),
       ),
     );
   }
 
-  void alrtRandevuTamamla(BuildContext context, ActiveAppointment rand) {
-    var alrtRandevu = AlertDialog(
+  void alrtAppointmentComplete(BuildContext context, ActiveAppointment rand) {
+    var alrtAppointment = AlertDialog(
       title: Text(
-        "Randevuyu Bitir",
+        "Appointment Finish",
         style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
       ),
       actions: <Widget>[
         FlatButton(
           child: Text(
-            "Evet",
+            "Yes",
             textAlign: TextAlign.center,
           ),
           onPressed: () {
             UpdateService()
-                .updateDoctorAppointments(doktor.kimlikNo, rand.randevuTarihi);
+                .updateDoctorAppointments(doctor.id, rand.appointmentDate);
             DelService().deleteActiveAppointment(rand);
             AddService().addPastAppointment(rand);
             Navigator.pop(context);
@@ -130,7 +130,7 @@ class _BuildAppointmentListState extends State<BuildAppointmentListForDoctor> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alrtRandevu;
+          return alrtAppointment;
         });
   }
 }

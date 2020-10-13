@@ -4,88 +4,88 @@ import 'package:fast_turtle_v2/models/activeAppointmentModel.dart';
 import 'package:fast_turtle_v2/models/passiveAppoModel.dart';
 import 'package:fast_turtle_v2/models/sectionModel.dart';
 import 'package:fast_turtle_v2/models/userModel.dart';
-import 'package:fast_turtle_v2/models/doktorModel.dart';
+import 'package:fast_turtle_v2/models/doctorModel.dart';
 import 'package:fast_turtle_v2/models/adminModel.dart';
 import 'package:fast_turtle_v2/models/hospitalModel.dart';
 
 class AddService {
   String saveUser(User user) {
-    Firestore.instance.collection('tblKullanici').document().setData({
+    Firestore.instance.collection('tblUser').document().setData({
       'ad': user.adi,
-      'soyad': user.soyadi,
-      'kimlikNo': user.kimlikNo,
-      'cinsiyet': user.cinsiyet,
-      'dogumTarihi': user.dogumTarihi,
-      'dogumYeri': user.dogumYeri,
-      'sifre': user.sifre
+      'soyad': user.lastName,
+      'id': user.id,
+      'gender': user.gender,
+      'birthday': user.birthday,
+      'placeOfBirth': user.placeOfBirth,
+      'password': user.password
     });
-    return 'kullanıcı ekleme işlemi Tamamlandı';
+    return 'kullanıcı ekleme işlemi Completendı';
   }
 
-  void saveDoctor(Doktor dr, Section bolumu, Hospital hastanesi) {
-    var randevular = [];
-    Firestore.instance.collection('tblDoktor').document().setData({
-      'kimlikNo': dr.kimlikNo,
-      'ad': dr.adi,
-      'soyad': dr.soyadi,
-      'sifre': dr.sifre,
-      'bolumId': bolumu.bolumId,
-      'hastaneId': hastanesi.hastaneId,
-      'cinsiyet': dr.cinsiyet,
-      'dogumTarihi': dr.dogumTarihi,
-      'dogumYeri': dr.dogumYeri,
+  void saveDoctor(Doctor dr, Section departmentu, Hospital hospitalsi) {
+    var appointments = [];
+    Firestore.instance.collection('tblDoctor').document().setData({
+      'id': dr.id,
+      'ad': dr.firstName,
+      'soyad': dr.lastName,
+      'password': dr.password,
+      'departmentId': departmentu.departmentId,
+      'hospitalId': hospitalsi.hospitalId,
+      'gender': dr.gender,
+      'birthday': dr.birthday,
+      'placeOfBirth': dr.placeOfBirth,
       'favoriSayaci' : 0,
-      'randevular' : randevular
+      'appointments' : appointments
     });
   }
 
-  void addActiveAppointment(Doktor dr, User user, String tarih) {
-    Firestore.instance.collection('tblAktifRandevu').document().setData({
-      'doktorTCKN': dr.kimlikNo,
-      'hastaTCKN': user.kimlikNo,
-      'randevuTarihi': tarih,
-      'doktorAdi': dr.adi,
-      'doktorSoyadi': dr.soyadi,
-      'hastaAdi': user.adi,
-      'hastaSoyadi': user.soyadi
+  void addActiveAppointment(Doctor dr, User user, String history) {
+    Firestore.instance.collection('tbleActiveAppointments').document().setData({
+      'doctorToken': dr.id,
+      'patientToken': user.id,
+      'appointmentDate': history,
+      'doctorName': dr.firstName,
+      'doctorLastName': dr.lastName,
+      'patientName': user.adi,
+      'patientLastName': user.lastName
     });
   }
 
   void addDoctorToUserFavList(PassAppointment rand) {
     Firestore.instance.collection('tblFavoriler').document().setData({
-      'doktorTCKN': rand.doktorTCKN,
-      'hastaTCKN': rand.hastaTCKN,
-      'doktorAdi': rand.doktorAdi,
-      'doktorSoyadi': rand.doktorSoyadi,
-      'hastaAdi': rand.hastaAdi,
-      'hastaSoyadi': rand.hastaSoyadi
+      'doctorToken': rand.doctorToken,
+      'patientToken': rand.patientToken,
+      'doctorName': rand.doctorName,
+      'doctorLastName': rand.doctorLastName,
+      'patientName': rand.patientName,
+      'patientLastName': rand.patientLastName
     });
   }
 
   void addPastAppointment(ActiveAppointment randevu) {
-    Firestore.instance.collection('tblRandevuGecmisi').document().setData({
-      'doktorTCKN': randevu.doktorTCKN,
-      'hastaTCKN': randevu.hastaTCKN,
-      'islemTarihi': randevu.randevuTarihi,
-      'doktorAdi': randevu.doktorAdi,
-      'doktorSoyadi': randevu.doktorSoyadi,
-      'hastaAdi': randevu.hastaAdi,
-      'hastaSoyadi': randevu.hastaSoyadi
+    Firestore.instance.collection('tblAppointmentHistory').document().setData({
+      'doctorToken': randevu.doctorToken,
+      'patientToken': randevu.patientToken,
+      'operationHistoryi': randevu.appointmentDate,
+      'doctorName': randevu.doctorName,
+      'doctorLastName': randevu.doctorLastName,
+      'patientName': randevu.patientName,
+      'patientLastName': randevu.patientLastName
     });
   }
 
-  addDoctorAppointment(Doktor doktor) {
+  addDoctorAppointment(Doctor doctor) {
     Firestore.instance
-        .collection("tblDoktor")
-        .document(doktor.reference.documentID)
-        .setData({'randevular': doktor.randevular}, merge: true);
+        .collection("tblDoctor")
+        .document(doctor.reference.documentID)
+        .set({'appointments': doctor.appointments}, SetOptions(merge: true));
   }
 
   closeDoctorAppointment(Admin admin) {
     Firestore.instance
         .collection("tblAdmin")
         .document(admin.reference.documentID)
-        .setData({'kapatilanSaatler': admin.kapatilanSaatler}, merge: true);
+        .set({'closedWatches': admin.closedWatches}, SetOptions(merge: true));
   }
 
   String saveAdmin(Admin admin) {
@@ -94,28 +94,28 @@ class AddService {
       'nicname': admin.nickname,
       'password': admin.password
     });
-    return 'Admin ekleme işlem tamamlandı';
+    return 'Admin ekleme işlem completendı';
   }
 
-  String saveHospital(Hospital hastane) {
+  String saveHospital(Hospital hospital) {
     SearchService().getLastHospitalId().then((QuerySnapshot docs) {
-      Firestore.instance.collection("tblHastane").document().setData({
-        'hastaneAdi': hastane.hastaneAdi,
-        'hastaneId': docs.documents[0]['hastaneId'] + 1,
+      Firestore.instance.collection("tblhospital").document().setData({
+        'hospitalName': hospital.hospitalName,
+        'hospitalId': docs.documents[0]['hospitalId'] + 1,
       });
     });
 
-    return 'Hastane kaydı tamamlandı';
+    return 'hospital kaydı completendı';
   }
 
-  String saveSection(Section bolum, Hospital hastane) {
+  String saveSection(Section department, Hospital hospital) {
     SearchService().getLastSectionId().then((QuerySnapshot docs) {
-      Firestore.instance.collection("tblBolum").document().setData({
-        "bolumAdi": bolum.bolumAdi,
-        "bolumId": docs.documents[0]["bolumId"] + 1,
-        "hastaneId": hastane.hastaneId
+      Firestore.instance.collection("tblDepartment").document().setData({
+        "departmentName": department.departmentName,
+        "departmentId": docs.documents[0]["departmentId"] + 1,
+        "hospitalId": hospital.hospitalId
       });
     });
-    return "Bölüm ekleme tamamlandı";
+    return "Bölüm ekleme completendı";
   }
 }

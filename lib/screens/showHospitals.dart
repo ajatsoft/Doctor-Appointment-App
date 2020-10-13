@@ -12,7 +12,7 @@ class _BuildHospitalListState extends State<BuildHospitalList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Hastaneler"),
+        title: Text("hospitaller"),
       ),
       body: _buildStremBuilder(context),
     );
@@ -20,7 +20,7 @@ class _BuildHospitalListState extends State<BuildHospitalList> {
 
   _buildStremBuilder(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection("tblHastane").snapshots(),
+      stream: Firestore.instance.collection("tblhospital").snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return LinearProgressIndicator();
@@ -41,18 +41,18 @@ class _BuildHospitalListState extends State<BuildHospitalList> {
   }
 
   _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final hastane = Hospital.fromSnapshot(data);
+    final hospital = Hospital.fromSnapshot(data);
     return Padding(
-      key: ValueKey(hastane.hastaneId),
+      key: ValueKey(hospital.hospitalId),
       padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
         decoration: BoxDecoration(
             border: Border.all(color: Colors.grey),
             borderRadius: BorderRadius.circular(10.0)),
         child: ListTile(
-          title: Text(hastane.hastaneAdi),
+          title: Text(hospital.hospitalName),
           onTap: () {
-            Navigator.pop(context, hastane);
+            Navigator.pop(context, hospital);
           },
         ),
       ),

@@ -1,50 +1,50 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FavoriteList {
-  String doktorTCKN;
-  String doktorAdi;
-  String doktorSoyadi;
-  String hastaTCKN;
-  String hastaAdi;
-  String hastaSoyadi;
+  String doctorToken;
+  String doctorName;
+  String doctorLastName;
+  String patientToken;
+  String patientName;
+  String patientLastName;
   DocumentReference reference;
 
   FavoriteList(
-      {this.doktorTCKN,
-      this.hastaTCKN,
-      this.doktorAdi,
-      this.doktorSoyadi,
-      this.hastaAdi,
-      this.hastaSoyadi});
+      {this.doctorToken,
+      this.patientToken,
+      this.doctorName,
+      this.doctorLastName,
+      this.patientName,
+      this.patientLastName});
 
   FavoriteList.fromJson(Map<String, dynamic> json) {
-    doktorTCKN = json['doktorTCKN'];
-    hastaTCKN = json['hastaTCKN'];
-    doktorAdi = json['doktorAdi'];
-    hastaAdi = json['hastaAdi'];
-    doktorSoyadi = json['doktorSoyadi'];
-    hastaSoyadi = json['hastaSoyadi'];
+    doctorToken = json['doctorToken'];
+    patientToken = json['patientToken'];
+    doctorName = json['doctorName'];
+    patientName = json['patientName'];
+    doctorLastName = json['doctorLastName'];
+    patientLastName = json['patientLastName'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['doktorTCKN'] = this.doktorTCKN;
-    data['hastaTCKN'] = this.hastaTCKN;
-    data['doktorAdi'] = this.doktorAdi;
-    data['hastaAdi'] = this.hastaAdi;
-    data['doktorSoyadi'] = this.doktorSoyadi;
-    data['hastaSoyadi'] = this.hastaSoyadi;
+    data['doctorToken'] = this.doctorToken;
+    data['patientToken'] = this.patientToken;
+    data['doctorName'] = this.doctorName;
+    data['patientName'] = this.patientName;
+    data['doctorLastName'] = this.doctorLastName;
+    data['patientLastName'] = this.patientLastName;
     return data;
   }
 
   FavoriteList.fromMap(Map<String, dynamic> map, {this.reference})
-      : doktorTCKN = map["doktorTCKN"],
-        hastaTCKN = map["hastaTCKN"],
-        doktorAdi = map["doktorAdi"],
-        hastaAdi = map["hastaAdi"],
-        doktorSoyadi = map["doktorSoyadi"],
-        hastaSoyadi = map["hastaSoyadi"];
+      : doctorToken = map["doctorToken"],
+        patientToken = map["patientToken"],
+        doctorName = map["doctorName"],
+        patientName = map["patientName"],
+        doctorLastName = map["doctorLastName"],
+        patientLastName = map["patientLastName"];
 
   FavoriteList.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 }

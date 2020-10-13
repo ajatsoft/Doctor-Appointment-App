@@ -18,8 +18,8 @@ class UserHomePage extends StatefulWidget {
 }
 
 class UserHomePageState extends State {
-  User kullanici;
-  UserHomePageState(this.kullanici);
+  User user;
+  UserHomePageState(this.user);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class UserHomePageState extends State {
         appBar: AppBar(
           backgroundColor: Colors.greenAccent,
           centerTitle: true,
-          title: Text("Kullanıcı Ana Sayfası"),
+          title: Text("User Ana Sayfası"),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -65,7 +65,7 @@ class UserHomePageState extends State {
                           ),
                           Container(
                             child: Text(
-                              kullanici.adi,
+                              user.adi,
                               style: TextStyle(
                                   fontSize: 30.0, fontWeight: FontWeight.bold),
                             ),
@@ -75,7 +75,7 @@ class UserHomePageState extends State {
                           ),
                           Container(
                             child: Text(
-                              kullanici.soyadi,
+                              user.lastName,
                               style: TextStyle(
                                   fontSize: 30.0, fontWeight: FontWeight.bold),
                             ),
@@ -88,13 +88,13 @@ class UserHomePageState extends State {
                         height: 0.4,
                       ),
                       _buildAttributeRow(
-                          "T.C. Kimlik Numarası", kullanici.kimlikNo),
+                          "T.C. Id Numarası", user.id),
                       _buildAttributeRow(
-                          "Cinsiyet", kullanici.cinsiyet.toString()),
+                          "Gender", user.gender.toString()),
                       _buildAttributeRow(
-                          "Doğum Yeri", kullanici.dogumYeri.toString()),
+                          "Doğum Yeri", user.placeOfBirth.toString()),
                       _buildAttributeRow(
-                          "Doğum Tarihi", kullanici.dogumTarihi.toString()),
+                          "Doğum Historyi", user.birthday.toString()),
                       SizedBox(
                         height: 30.0,
                       )
@@ -108,27 +108,27 @@ class UserHomePageState extends State {
                 color: Colors.blueAccent[200],
                 child: Column(
                   children: <Widget>[
-                    _randevuAlButonu(),
+                    _randevuAlButton(),
                     SizedBox(
                       height: 5.0,
                     ),
-                    _aktifRandevularButonu(),
+                    _aktifAppointmentsButton(),
                     SizedBox(
                       height: 5.0,
                     ),
-                    _randevuGecmisiButonu(),
+                    _randevuHistoryButton(),
                     SizedBox(
                       height: 5.0,
                     ),
-                    _hesapBilgileriButonu(),
+                    _hesapBilgileriButton(),
                     SizedBox(
                       height: 5.0,
                     ),
-                    _favoriListesiButonu(),
+                    _favoriListesiButton(),
                     SizedBox(
                       height: 5.0,
                     ),
-                    _cikisYapButonu()
+                    _exitButton()
                   ],
                 ),
               )
@@ -170,7 +170,7 @@ class UserHomePageState extends State {
     );
   }
 
-  _randevuAlButonu() {
+  _randevuAlButton() {
     return Container(
       padding: EdgeInsets.all(1.0),
       width: 390.0,
@@ -181,17 +181,17 @@ class UserHomePageState extends State {
           splashColor: Colors.grey,
           highlightColor: Colors.white70,
           child: Text(
-            "Randevu Al",
+            "Appointment Al",
             style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
           ),
           onPressed: () {
-            basicNavigator(MakeAppointment(kullanici),
-                "Randevu Kaydınız Başarıyla Alındı. Şimdiden Geçmiş Olsun :)");
+            basicNavigator(MakeAppointment(user),
+                "Appointment Kaydınız Başarıyla Alındı. Şimdiden Geçmiş Olsun :)");
           }),
     );
   }
 
-  _randevuGecmisiButonu() {
+  _randevuHistoryButton() {
     return Container(
       padding: EdgeInsets.all(1.0),
       width: 390.0,
@@ -202,18 +202,18 @@ class UserHomePageState extends State {
         splashColor: Colors.grey,
         highlightColor: Colors.white70,
         child: Text(
-          "Randevu Geçmişi",
+          "Appointment Geçmişi",
           style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         ),
         onPressed: () => Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => AppointmentHistory(kullanici))),
+                builder: (context) => AppointmentHistory(user))),
       ),
     );
   }
 
-  _aktifRandevularButonu() {
+  _aktifAppointmentsButton() {
     return Container(
       padding: EdgeInsets.all(1.0),
       width: 390.0,
@@ -224,16 +224,16 @@ class UserHomePageState extends State {
           splashColor: Colors.grey,
           highlightColor: Colors.white70,
           child: Text(
-            "Aktif Randevuları Listele",
+            "Aktif Appointmentsı Listele",
             style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
           ),
           onPressed: () {
-            basicNavigator(BuildAppointmentList(kullanici), "İşlem Tamamlandı");
+            basicNavigator(BuildAppointmentList(user), "İşlem Completendı");
           }),
     );
   }
 
-  _favoriListesiButonu() {
+  _favoriListesiButton() {
     return Container(
       padding: EdgeInsets.all(1.0),
       width: 390.0,
@@ -248,12 +248,12 @@ class UserHomePageState extends State {
             style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
           ),
           onPressed: () {
-            basicNavigator(BuildUserFavList(kullanici), "İşlem Tamamlandı");
+            basicNavigator(BuildUserFavList(user), "İşlem Completendı");
           }),
     );
   }
 
-  _hesapBilgileriButonu() {
+  _hesapBilgileriButton() {
     return Container(
       padding: EdgeInsets.all(1.0),
       width: 390.0,
@@ -268,7 +268,7 @@ class UserHomePageState extends State {
           style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         ),
         onPressed: () {
-          basicNavigator(UpdateUser(kullanici), "İşlem Tamamlandı");
+          basicNavigator(UpdateUser(user), "İşlem Completendı");
         },
       ),
     );
@@ -299,7 +299,7 @@ class UserHomePageState extends State {
         });
   }
 
-  _cikisYapButonu() {
+  _exitButton() {
     return Container(
       padding: EdgeInsets.all(1.0),
       width: 390.0,

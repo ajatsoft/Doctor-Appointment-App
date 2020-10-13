@@ -16,8 +16,8 @@ class RegisterPageState extends State with ValidationMixin {
 
   var genders = ["Kadın", "Erkek"];
   String selectedGenders = "Kadın";
-  var dogumTarihi;
-  var raisedButtonText = "Tıkla ve Seç";
+  var birthday;
+  var raisedButtonText = "Tıkla per Seç";
 
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -26,7 +26,7 @@ class RegisterPageState extends State with ValidationMixin {
       firstDate: DateTime(1920),
       lastDate: DateTime.now(),
     );
-    dogumTarihi = picked;
+    birthday = picked;
   }
 
   @override
@@ -42,8 +42,8 @@ class RegisterPageState extends State with ValidationMixin {
                 key: registerFormKey,
                 child: Column(
                   children: <Widget>[
-                    kimlikNoField(),
-                    sifreField(),
+                    idField(),
+                    passwordField(),
                     firstNameField(),
                     lastNameField(),
                     placeofBirthField(),
@@ -86,21 +86,21 @@ class RegisterPageState extends State with ValidationMixin {
     Navigator.pop(context, result);
   }
 
-  Widget kimlikNoField() {
+  Widget idField() {
     return TextFormField(
-      decoration: InputDecoration(labelText: "T.C. Kimlik Numarası:"),
+      decoration: InputDecoration(labelText: "T.C. Id Numarası:"),
       validator: validateTCNo,
       onSaved: (String value) {
-        user.kimlikNo = value;
+        user.id = value;
       },
     );
   }
 
-  Widget sifreField() {
+  Widget passwordField() {
     return TextFormField(
       decoration: InputDecoration(labelText: "Şifre:"),
       onSaved: (String value) {
-        user.sifre = value;
+        user.password = value;
       },
     );
   }
@@ -120,7 +120,7 @@ class RegisterPageState extends State with ValidationMixin {
       decoration: InputDecoration(labelText: "Soyad"),
       validator: validateLastName,
       onSaved: (String value) {
-        user.soyadi = value;
+        user.lastName = value;
       },
     );
   }
@@ -129,7 +129,7 @@ class RegisterPageState extends State with ValidationMixin {
     return TextFormField(
       decoration: InputDecoration(labelText: "Doğum Yeri"),
       onSaved: (String value) {
-        user.dogumYeri = value;
+        user.placeOfBirth = value;
       },
     );
   }
@@ -142,15 +142,15 @@ class RegisterPageState extends State with ValidationMixin {
             Container(
               padding: EdgeInsets.only(right: 25.0),
               child: Text(
-                "Cinsiyet: ",
+                "Gender: ",
                 style: TextStyle(fontSize: 19.0),
               ),
             ),
             DropdownButton<String>(
-              items: genders.map((String cinsiyetler) {
+              items: genders.map((String genderler) {
                 return DropdownMenuItem<String>(
-                  value: cinsiyetler,
-                  child: Text(cinsiyetler),
+                  value: genderler,
+                  child: Text(genderler),
                 );
               }).toList(),
               value: selectedGenders,
@@ -161,7 +161,7 @@ class RegisterPageState extends State with ValidationMixin {
                   } else {
                     this.selectedGenders = tiklanan;
                   }
-                  user.cinsiyet = selectedGenders;
+                  user.gender = selectedGenders;
                 });
               },
             ),
@@ -175,15 +175,15 @@ class RegisterPageState extends State with ValidationMixin {
       child: Row(
         children: <Widget>[
           Text(
-            "Doğum Tarihi: ",
+            "Doğum Historyi: ",
             style: TextStyle(fontSize: 19.0),
           ),
           RaisedButton(
             child: Text(raisedButtonText),
             onPressed: () {
               _selectDate(context).then((result) => setState(() {
-                    raisedButtonText = dogumTarihi.toString().substring(0, 10);
-                    user.dogumTarihi = dogumTarihi.toString().substring(0, 10);
+                    raisedButtonText = birthday.toString().substring(0, 10);
+                    user.birthday = birthday.toString().substring(0, 10);
                   }));
             },
           )
@@ -197,7 +197,7 @@ class RegisterPageState extends State with ValidationMixin {
       padding: EdgeInsets.only(top: 45.0),
       child: RaisedButton(
         child: Text(
-          "Tamamla",
+          "Complete",
           textDirection: TextDirection.ltr,
           style: TextStyle(fontSize: 20.0),
         ),

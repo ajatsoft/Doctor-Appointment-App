@@ -32,7 +32,7 @@ class _UpdateUserState extends State<UpdateUser> with ValidationMixin {
               children: <Widget>[
                 firstNameField(),
                 lastNameField(),
-                sifreField(),
+                passwordField(),
                 SizedBox(
                   height: 25.0,
                 ),
@@ -43,14 +43,14 @@ class _UpdateUserState extends State<UpdateUser> with ValidationMixin {
     );
   }
 
-  Widget sifreField() {
+  Widget passwordField() {
     return TextFormField(
       decoration: InputDecoration(
           labelText: "Şifre",
           labelStyle:
               TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
       onSaved: (String value) {
-        user.sifre = value;
+        user.password = value;
       },
       obscureText: true,
     );
@@ -77,7 +77,7 @@ class _UpdateUserState extends State<UpdateUser> with ValidationMixin {
               TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
       validator: validateLastName,
       onSaved: (String value) {
-        user.soyadi = value;
+        user.lastName = value;
       },
     );
   }
@@ -92,7 +92,7 @@ class _UpdateUserState extends State<UpdateUser> with ValidationMixin {
           ),
           color: Colors.black),
       child: RaisedButton(
-        child: Text("Tamamla",
+        child: Text("Complete",
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
@@ -101,7 +101,7 @@ class _UpdateUserState extends State<UpdateUser> with ValidationMixin {
           if (formKey.currentState.validate()) {
             formKey.currentState.save();
             SearchService()
-                .searchUserById(user.kimlikNo)
+                .searchUserById(user.id)
                 .then((QuerySnapshot docs) {
               user.reference = docs.documents[0].reference;
               UpdateService().updateUser(user);

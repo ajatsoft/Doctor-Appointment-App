@@ -14,8 +14,8 @@ class UpdateHospital extends StatefulWidget {
 }
 
 class UpdateHospitalState extends State with ValidationMixin {
-  Hospital hastane = Hospital();
-  bool hastaneSecildiMi = false;
+  Hospital hospital = Hospital();
+  bool hospitalChosenMi = false;
   double goruntu = 0.0;
   String newName;
   final formKey = GlobalKey<FormState>();
@@ -25,7 +25,7 @@ class UpdateHospitalState extends State with ValidationMixin {
       backgroundColor: Colors.blueAccent,
       appBar: AppBar(
         title: Text(
-          "Hastane Güncelle Ekranı",
+          "hospital Güncelle Ekranı",
           style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
         ),
       ),
@@ -39,21 +39,21 @@ class UpdateHospitalState extends State with ValidationMixin {
                 child: Column(
                   children: <Widget>[
                     RaisedButton(
-                      child: Text("Hastane Seçmek İçin Tıkla"),
+                      child: Text("hospital Seçmek İçin Tıkla"),
                       onPressed: () {
                         hospitalNavigator(BuildHospitalList());
                       },
                     ),
                     SizedBox(height: 13.0),
-                    showSelectedHospital(hastaneSecildiMi),
+                    showSelectedHospital(hospitalChosenMi),
                     SizedBox(
                       height: 30.0,
                     ),
-                    _yeniHastaneAdi(),
+                    _yenihospitalName(),
                     SizedBox(
                       height: 20.0,
                     ),
-                    _guncelleButonu()
+                    _guncelleButton()
                   ],
                 ),
               ),
@@ -64,10 +64,10 @@ class UpdateHospitalState extends State with ValidationMixin {
     );
   }
 
-  _yeniHastaneAdi() {
+  _yenihospitalName() {
     return TextFormField(
       decoration: InputDecoration(
-          labelText: "Yeni Hastane Adini Girin:",
+          labelText: "Yeni hospital Nameni Girin:",
           labelStyle: TextStyle(
               fontSize: 17.0,
               fontWeight: FontWeight.bold,
@@ -80,21 +80,21 @@ class UpdateHospitalState extends State with ValidationMixin {
   }
 
   void hospitalNavigator(dynamic page) async {
-    hastane = await Navigator.push(
+    hospital = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => page));
 
-    if (hastane == null) {
-      hastaneSecildiMi = false;
+    if (hospital == null) {
+      hospitalChosenMi = false;
     } else {
-      hastaneSecildiMi = true;
+      hospitalChosenMi = true;
     }
   }
 
-  showSelectedHospital(bool secildiMi) {
+  showSelectedHospital(bool chosenMi) {
     String textMessage = " ";
-    if (secildiMi) {
+    if (chosenMi) {
       setState(() {
-        textMessage = this.hastane.hastaneAdi.toString();
+        textMessage = this.hospital.hospitalName.toString();
       });
       goruntu = 1.0;
     } else {
@@ -106,7 +106,7 @@ class UpdateHospitalState extends State with ValidationMixin {
         child: Row(
           children: <Widget>[
             Text(
-              "Seçilen Hastane : ",
+              "Seçilen hospital : ",
               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
             Opacity(
@@ -139,11 +139,11 @@ class UpdateHospitalState extends State with ValidationMixin {
         });
   }
 
-  _guncelleButonu() {
+  _guncelleButton() {
     return Container(
       child: RaisedButton(
         child: Text(
-          "Hastaneyi Güncelle",
+          "hospitalyi Güncelle",
           textDirection: TextDirection.ltr,
           style: TextStyle(fontSize: 20.0),
         ),
@@ -153,12 +153,12 @@ class UpdateHospitalState extends State with ValidationMixin {
             SearchService()
                 .searchHospitalByName(newName)
                 .then((QuerySnapshot docs) {
-              if (docs.documents.isEmpty && newName != hastane.hastaneAdi) {
-                hastane.hastaneAdi = newName;
-                UpdateService().updateHastane(hastane);
+              if (docs.documents.isEmpty && newName != hospital.hospitalName) {
+                hospital.hospitalName = newName;
+                UpdateService().updatehospital(hospital);
                 Navigator.pop(context, true);
               } else {
-                alrtHospital(context, "Bu isimde bir hastane zaten mevcut");
+                alrtHospital(context, "Bu isimde bir hospital zaten mevcut");
               }
             });
           } else {

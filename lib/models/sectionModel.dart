@@ -1,33 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Section {
-  String bolumAdi;
-  int bolumId;
-  int hastaneId;
+  String departmentName;
+  int departmentId;
+  int hospitalId;
 
   DocumentReference reference;
 
-  Section({this.bolumAdi, this.bolumId, this.hastaneId});
+  Section({this.departmentName, this.departmentId, this.hospitalId});
 
   Section.fromJson(Map<String, dynamic> json) {
-    bolumAdi = json['bolumAdi'];
-    bolumId = json['bolumId'];
-    hastaneId = json['hastaneId'];
+    departmentName = json['departmentName'];
+    departmentId = json['departmentId'];
+    hospitalId = json['hospitalId'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['bolumAdi'] = this.bolumAdi;
-    data['bolumId'] = this.bolumId;
-    data['hastaneId'] = this.hastaneId;
+    data['departmentName'] = this.departmentName;
+    data['departmentId'] = this.departmentId;
+    data['hospitalId'] = this.hospitalId;
     return data;
   }
 
   Section.fromMap(Map<String, dynamic> map, {this.reference})
-      : bolumAdi = map["bolumAdi"],
-        bolumId = map["bolumId"],
-        hastaneId = map["hastaneId"];
+      : departmentName = map["departmentName"],
+        departmentId = map["departmentId"],
+        hospitalId = map["hospitalId"];
 
   Section.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 }

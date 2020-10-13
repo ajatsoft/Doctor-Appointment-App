@@ -35,7 +35,7 @@ class AddAdminState extends State with ValidationMixin {
                     SizedBox(
                       height: 30.0,
                     ),
-                    _kaydetButonu(),
+                    _kaydetButton(),
                   ],
                 ),
               ),
@@ -45,7 +45,7 @@ class AddAdminState extends State with ValidationMixin {
       ),
       bottomNavigationBar: Container(
         margin: EdgeInsets.only(bottom: 10.0, left: 8.0, right: 8.0),
-        child: _cikisYapButonu(),
+        child: _exitButton(),
       ),
     );
   }
@@ -74,7 +74,7 @@ class AddAdminState extends State with ValidationMixin {
     );
   }
 
-  _kaydetButonu() {
+  _kaydetButton() {
     return RaisedButton(
       child: Text(
         "Yeni Admin Ekle",
@@ -85,7 +85,7 @@ class AddAdminState extends State with ValidationMixin {
     );
   }
 
-  _cikisYapButonu() {
+  _exitButton() {
     return Container(
       padding: EdgeInsets.all(1.0),
       width: 390.0,

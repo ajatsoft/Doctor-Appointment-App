@@ -59,7 +59,7 @@ This project written wiht Flutter.
 ## 09_May_2019 v2
 
 *Fixed the bugs from 07_May_2019 v1,
-*All function about addDoktorPage are work and stable
+*All function about addDoctorPage are work and stable
 
 ## 09_May_2019 v3
 

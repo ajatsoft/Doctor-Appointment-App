@@ -13,14 +13,14 @@ class AddHospital extends StatefulWidget {
 }
 
 class AddHospitalState extends State with ValidationMixin {
-  final hastane = Hospital();
+  final hospital = Hospital();
   final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Hastane Ekle",
+          "hospital Ekle",
           style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
         ),
       ),
@@ -51,7 +51,7 @@ class AddHospitalState extends State with ValidationMixin {
     return Container(
       child: TextFormField(
         decoration: InputDecoration(
-            labelText: "Eklenecek Hastane Adı",
+            labelText: "Eklenecek hospital Adı",
             labelStyle: TextStyle(
                 fontSize: 17.0,
                 fontWeight: FontWeight.bold,
@@ -59,7 +59,7 @@ class AddHospitalState extends State with ValidationMixin {
         validator: validateFirstName,
         autocorrect: false,
         onSaved: (String value) {
-          hastane.hastaneAdi = value;
+          hospital.hospitalName = value;
         },
       ),
     );
@@ -69,20 +69,20 @@ class AddHospitalState extends State with ValidationMixin {
     return Container(
       child: RaisedButton(
         child: Text(
-          "Tamamla",
+          "Complete",
           style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
         ),
         onPressed: () {
           formKey.currentState.validate();
           formKey.currentState.save();
           SearchService()
-              .searchHospitalByName(hastane.hastaneAdi)
+              .searchHospitalByName(hospital.hospitalName)
               .then((QuerySnapshot docs) {
             if (docs.documents.isEmpty) {
-              AddService().saveHospital(hastane);
+              AddService().saveHospital(hospital);
               Navigator.pop(context, true);
             } else {
-              alrtHospital(context, "Aynı isimde hastane ekleyemezsiniz");
+              alrtHospital(context, "Aynı isimde hospital ekleyemezsiniz");
             }
           });
         },

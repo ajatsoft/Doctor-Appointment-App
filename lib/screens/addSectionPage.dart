@@ -15,9 +15,9 @@ class AddSection extends StatefulWidget {
 }
 
 class AddSectionState extends State with ValidationMixin {
-  final bolum = Section();
-  Hospital hastane = Hospital();
-  bool hastaneSecildiMi = false;
+  final department = Section();
+  Hospital hospital = Hospital();
+  bool hospitalChosenMi = false;
   double goruntu = 0.0;
   final formKey = GlobalKey<FormState>();
   @override
@@ -41,7 +41,7 @@ class AddSectionState extends State with ValidationMixin {
                 child: Column(
                   children: <Widget>[
                     RaisedButton(
-                      child: Text("Hastane Seçmek İçin Tıkla"),
+                      child: Text("hospital Seçmek İçin Tıkla"),
                       onPressed: () {
                         hospitalNavigator(BuildHospitalList());
                       },
@@ -49,15 +49,15 @@ class AddSectionState extends State with ValidationMixin {
                     SizedBox(
                       height: 16.0,
                     ),
-                    showSelectedHospital(hastaneSecildiMi),
+                    showSelectedHospital(hospitalChosenMi),
                     SizedBox(
                       height: 20.0,
                     ),
-                    _yeniBolumAdi(),
+                    _yeniDepartmentName(),
                     SizedBox(
                       height: 25.0,
                     ),
-                    _kaydetButonu()
+                    _kaydetButton()
                   ],
                 ),
               ),
@@ -68,10 +68,10 @@ class AddSectionState extends State with ValidationMixin {
     );
   }
 
-  _yeniBolumAdi() {
+  _yeniDepartmentName() {
     return TextFormField(
       decoration: InputDecoration(
-          labelText: "Yeni Bölüm Adini Girin:",
+          labelText: "Yeni Bölüm Nameni Girin:",
           labelStyle: TextStyle(
               fontSize: 17.0,
               fontWeight: FontWeight.bold,
@@ -80,12 +80,12 @@ class AddSectionState extends State with ValidationMixin {
               OutlineInputBorder(borderSide: BorderSide(color: Colors.black))),
       validator: validateFirstName,
       onSaved: (String value) {
-        bolum.bolumAdi = value;
+        department.departmentName = value;
       },
     );
   }
 
-  _kaydetButonu() {
+  _kaydetButton() {
     return RaisedButton(
       child: Text(
         "Yeni Bölüm Ekle",
@@ -93,14 +93,14 @@ class AddSectionState extends State with ValidationMixin {
         style: TextStyle(fontSize: 20.0),
       ),
       onPressed: () {
-        if (hastaneSecildiMi && formKey.currentState.validate()) {
+        if (hospitalChosenMi && formKey.currentState.validate()) {
           formKey.currentState.save();
           SearchService()
               .searchSectionByHospitalIdAndSectionName(
-                  hastane.hastaneId, bolum.bolumAdi)
+                  hospital.hospitalId, department.departmentName)
               .then((QuerySnapshot docs) {
             if (docs.documents.isEmpty) {
-              AddService().saveSection(bolum, hastane);
+              AddService().saveSection(department, hospital);
               Navigator.pop(context, true);
             } else {
               alrtHospital(context, "Aynı isimde bölüm ekleyemezsiniz");
@@ -114,21 +114,21 @@ class AddSectionState extends State with ValidationMixin {
   }
 
   void hospitalNavigator(dynamic page) async {
-    hastane = await Navigator.push(
+    hospital = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => page));
 
-    if (hastane == null) {
-      hastaneSecildiMi = false;
+    if (hospital == null) {
+      hospitalChosenMi = false;
     } else {
-      hastaneSecildiMi = true;
+      hospitalChosenMi = true;
     }
   }
 
-  showSelectedHospital(bool secildiMi) {
+  showSelectedHospital(bool chosenMi) {
     String textMessage = " ";
-    if (secildiMi) {
+    if (chosenMi) {
       setState(() {
-        textMessage = this.hastane.hastaneAdi.toString();
+        textMessage = this.hospital.hospitalName.toString();
       });
       goruntu = 1.0;
     } else {
@@ -140,7 +140,7 @@ class AddSectionState extends State with ValidationMixin {
         child: Row(
           children: <Widget>[
             Text(
-              "Seçilen Hastane : ",
+              "Seçilen hospital : ",
               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
             Opacity(

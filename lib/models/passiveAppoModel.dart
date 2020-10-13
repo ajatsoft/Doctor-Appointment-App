@@ -1,61 +1,61 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PassAppointment {
-  int kayitId;
-  String doktorTCKN;
-  String hastaTCKN;
-  String islemTarihi;
-  String doktorAdi;
-  String hastaAdi;
-  String doktorSoyadi;
-  String hastaSoyadi;
+  int recordId;
+  String doctorToken;
+  String patientToken;
+  String operationHistoryi;
+  String doctorName;
+  String patientName;
+  String doctorLastName;
+  String patientLastName;
 
   DocumentReference reference;
 
   PassAppointment(
-      {this.kayitId,
-      this.doktorTCKN,
-      this.hastaTCKN,
-      this.islemTarihi,
-      this.doktorAdi,
-      this.doktorSoyadi,
-      this.hastaAdi,
-      this.hastaSoyadi});
+      {this.recordId,
+      this.doctorToken,
+      this.patientToken,
+      this.operationHistoryi,
+      this.doctorName,
+      this.doctorLastName,
+      this.patientName,
+      this.patientLastName});
 
   PassAppointment.fromJson(Map<String, dynamic> json) {
-    kayitId = json['kayitId'];
-    doktorTCKN = json['doktorTCKN'];
-    hastaTCKN = json['hastaTCKN'];
-    islemTarihi = json['islemTarihi'];
-    doktorAdi = json['doktorAdi'];
-    hastaAdi = json['hastaAdi'];
-    doktorSoyadi = json['doktorSoyadi'];
-    hastaSoyadi = json['hastaSoyadi'];
+    recordId = json['recordId'];
+    doctorToken = json['doctorToken'];
+    patientToken = json['patientToken'];
+    operationHistoryi = json['operationHistoryi'];
+    doctorName = json['doctorName'];
+    patientName = json['patientName'];
+    doctorLastName = json['doctorLastName'];
+    patientLastName = json['patientLastName'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['kayitId'] = this.kayitId;
-    data['doktorTCKN'] = this.doktorTCKN;
-    data['hastaTCKN'] = this.hastaTCKN;
-    data['islemTarihi'] = this.islemTarihi;
-    data['doktorAdi'] = this.doktorAdi;
-    data['hastaAdi'] = this.hastaAdi;
-    data['doktorSoyadi'] = this.doktorSoyadi;
-    data['hastaSoyadi'] = this.hastaSoyadi;
+    data['recordId'] = this.recordId;
+    data['doctorToken'] = this.doctorToken;
+    data['patientToken'] = this.patientToken;
+    data['operationHistoryi'] = this.operationHistoryi;
+    data['doctorName'] = this.doctorName;
+    data['patientName'] = this.patientName;
+    data['doctorLastName'] = this.doctorLastName;
+    data['patientLastName'] = this.patientLastName;
     return data;
   }
 
   PassAppointment.fromMap(Map<String, dynamic> map, {this.reference})
-      : kayitId = map['kayitId'],
-        doktorTCKN = map['doktorTCKN'],
-        hastaTCKN = map['hastaTCKN'],
-        islemTarihi = map['islemTarihi'],
-        doktorAdi = map["doktorAdi"],
-        hastaAdi = map["hastaAdi"],
-        doktorSoyadi = map["doktorSoyadi"],
-        hastaSoyadi = map["hastaSoyadi"];
+      : recordId = map['recordId'],
+        doctorToken = map['doctorToken'],
+        patientToken = map['patientToken'],
+        operationHistoryi = map['operationHistoryi'],
+        doctorName = map["doctorName"],
+        patientName = map["patientName"],
+        doctorLastName = map["doctorLastName"],
+        patientLastName = map["patientLastName"];
 
   PassAppointment.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 }
